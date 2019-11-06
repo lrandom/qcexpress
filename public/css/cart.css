@@ -1,0 +1,86 @@
+/* .box >.box-header{
+    background: #dd4b39;
+    color: white;
+    border: none;
+} */
+
+#timeline-wrap{
+  margin:65px;
+  top:10;
+  position:relative;
+  margin-bottom: 100px;
+}
+
+#timeline{
+  height:5px;
+  width: 100%;
+  background-color:#dd4b39;
+  position:relative;
+ 
+}
+
+.marker-wrapper{
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: -23px;
+    left: 0%;
+}
+
+.marker{
+    background: #fff;
+    border:4px solid #dd4b39;
+    color:  #dd4b39;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.marker i{
+    font-size:18px;
+}
+
+.marker:hover,.marker.active{
+    background: #dd4b39;
+    border:2px solid #dd4b39;
+    color:  #fff;
+}
+.marker-title{
+    font-size: 16px;
+    margin-top: 10px;
+    font-weight:light;
+}
+
+.marker-two{
+    left:45%;
+}
+
+.marker-three{
+    left:90%;
+}
+
+.choose-address .box-ship-address{
+    padding:10px;
+}
+.choose-address .box-ship-address .name{
+   font-weight:bold;
+   font-size:18px;
+}
+
+.choose-address .box-ship-address .address{
+    line-height:1.5em;
+}
+
+
+.choose-address .box-ship-address .phone{
+   font-size:14px;
+   font-weight:bold;
+}

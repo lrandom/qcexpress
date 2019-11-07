@@ -198,6 +198,7 @@ class CartsController extends Controller
         // dd($request->owner_type);
 
         $data['item_orders'] = [];
+        $temp_cart = $_SESSION['cart'];
 
         foreach ($request->owner_type as $key => $owner_type) {
             if ($key == 1) {
@@ -212,6 +213,10 @@ class CartsController extends Controller
                             // $temp['od_note'] = $ind_cart['note'];
                             foreach ($ind_cart['ind_item'] as $ind_item) {
                                 array_push($temp['item'], $_SESSION['cart']['tmall_market'][$row]['stuffs'][$ind_item]);
+
+                                $temp_cart = $temp_cart['tmall_market'];
+                                array_splice($temp_cart, $ind_item, 1);
+                                $_SESSION['cart']['tmall_market'] = $temp_cart;
                             }
                         }
                         array_push($data['item_orders'], $temp);
@@ -224,6 +229,10 @@ class CartsController extends Controller
                             $temp['rate'] = $ind_cart['rate'];
                             // $temp['od_note'] = $ind_cart['note'];
                             array_push($temp['item'], $_SESSION['cart']['tmall_shop'][$row]);
+
+                            $temp_cart = $temp_cart['tmall_shop'];
+                            array_splice($temp_cart, $row, 1);
+                            $_SESSION['cart']['tmall_shop'] = $temp_cart;
                         }
                         array_push($data['item_orders'], $temp);
                     }
@@ -241,6 +250,10 @@ class CartsController extends Controller
                         // $temp['od_note'] = $ind_cart['note'];
                         foreach ($ind_cart['ind_item'] as $ind_item) {
                             array_push($temp['item'], $_SESSION['cart']['1688_market'][$row]['stuffs'][$ind_item]);
+
+                            $temp_cart = $temp_cart['1688_market'];
+                            array_splice($temp_cart, $ind_item, 1);
+                            $_SESSION['cart']['1688_market'] = $temp_cart;
                         }
                     }
                     array_push($data['item_orders'], $temp);
@@ -258,6 +271,10 @@ class CartsController extends Controller
                         // $temp['od_note'] = $ind_cart['note'];
                         foreach ($ind_cart['ind_item'] as $ind_item) {
                             array_push($temp['item'], $_SESSION['cart']['taobao_market'][$row]['stuffs'][$ind_item]);
+
+                            $temp_cart = $temp_cart['taobao_market'];
+                            array_splice($temp_cart, $ind_item, 1);
+                            $_SESSION['cart']['taobao_market'] = $temp_cart;
                         }
                     }
                     array_push($data['item_orders'], $temp);

@@ -7,9 +7,11 @@
     table ul li {
         list-style-type: none;
     }
+    
 </style>
 @php
   use App\CommentsOrders as CommentsOrders;
+  use App\Links as Links;
 @endphp
 @extends('layouts.user')
 @section('content')
@@ -251,11 +253,26 @@
                         <img class="lazyload" style="float:left;width:85px;margin-right:10px" src="{{$r1->picture}}">
                       @endif
                         <span style="float:left">
-                            <div><a href="{{$r1->link}}" target="_blank" style=" width: 250px;
+                            <div>
+                              <a href="{{$r1->link}}" target="_blank" style=" width: 250px;
                                 white-space: nowrap;
                                 overflow: hidden;
                                 display:block;
-                                text-overflow: ellipsis;">{{$r1->name}}</a></div>
+                                text-overflow: ellipsis;">{{$r1->name}}</a>
+                              <br>
+                              <?php $sub_link = Links::where('id_stuff', $r1->id)->get();
+                                if($sub_link != null){
+                                  foreach ($sub_link as $lab) { ?>
+                                    <a href="{{$lab->path}}" target="_blank" style=" width: 250px;
+                                        white-space: nowrap;
+                                        overflow: hidden;
+                                        display:block;
+                                        text-overflow: ellipsis;">{{$lab->path}}</a>
+                                    <br>
+                                  <?php }
+                                }
+                              ?>
+                            </div>
                             <div>
                                <?php
                                   if($r1->props!=null){
@@ -331,6 +348,30 @@
                                      {{formatCNY($r->transport_cn)}}
                                        -
                                      {{formatVND($r->transport_cn*$r->exchange_rate)}}
+                                    @else
+                                      -    
+                                     @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="">Phí vận chuyển Trung Việt</td>
+                                <td>
+                                    @if($r->transport_cn_vn!=null)  
+                                     {{formatCNY($r->transport_cn_vn)}}
+                                       -
+                                     {{formatVND($r->transport_cn_vn*$r->exchange_rate)}}
+                                    @else
+                                      -    
+                                     @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="">Cân nặng</td>
+                                <td>
+                                    @if($r->weight!=null)  
+                                     {{$r->weight}} (Kg)
                                     @else
                                       -    
                                      @endif

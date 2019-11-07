@@ -56,3 +56,10 @@ if (!function_exists('formateudate')) {
         return date('Y-m-d H:i:s', strtotime($time));
     }
 }
+
+if (!function_exists('formatorderid')) {
+    function formatorderid($time, $id)
+    {
+        return date('Y-m-d', strtotime($time)) . '-QDH' . $id;
+    }
+}

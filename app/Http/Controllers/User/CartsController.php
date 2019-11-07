@@ -7,11 +7,11 @@ use App\Order;
 use App\Stuff;
 use App\User;
 use App\CommentsOrders;
-use App\Statements;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
+use App\Statements;
 use Uuid;
 
 class CartsController extends Controller
@@ -23,7 +23,6 @@ class CartsController extends Controller
 
     public function cart(Request $request)
     {
-        //dd($_SESSION['cart']);
         $cart = null;
         if (isset($_SESSION['cart'])) {
             $cart = $_SESSION['cart'];
@@ -193,129 +192,154 @@ class CartsController extends Controller
         return redirect(URL::to('users/cart'));
     }
 
+
     public function make_order(Request $request)
     {
-        $data['owner_type'] = $request->owner_type;
-        $data['id_owner'] = $request->id_owner;
-        $data['owner_name'] = $request->owner_name;
-        $data['index_cart'] = $request->index_cart;
-        $data['total'] = $request->total;
-        $data['item_orders'] = null;
+        // dd($request->owner_type);
 
-        if ($data['owner_type'] == 1) {
-            if ($data['id_owner'] != -1) {
-                $data['item_orders'] = $_SESSION['cart']['tmall_market'][$request->index_cart]['stuffs'];
-            } else {
-                $data['item_orders'] = $_SESSION['cart']['tmall_shop'];
+        $data['item_orders'] = [];
+
+        foreach ($request->owner_type as $key => $owner_type) {
+            if ($key == 1) {
+                foreach ($owner_type as $lab => $id_owner) {
+                    if ($lab != -1) {
+                        $temp['item'] = [];
+                        $temp['owner_type'] = $key;
+                        $temp['id_owner'] = $lab;
+                        foreach ($id_owner as $row => $ind_cart) {
+                            $temp['owner_name'] = $ind_cart['owner_name'];
+                            $temp['rate'] = $ind_cart['rate'];
+                            // $temp['od_note'] = $ind_cart['note'];
+                            foreach ($ind_cart['ind_item'] as $ind_item) {
+                                array_push($temp['item'], $_SESSION['cart']['tmall_market'][$row]['stuffs'][$ind_item]);
+                            }
+                        }
+                        array_push($data['item_orders'], $temp);
+                    } else {
+                        $temp['item'] = [];
+                        $temp['owner_type'] = $key;
+                        $temp['id_owner'] = $lab;
+                        foreach ($id_owner as $row => $ind_cart) {
+                            $temp['owner_name'] = $ind_cart['owner_name'];
+                            $temp['rate'] = $ind_cart['rate'];
+                            // $temp['od_note'] = $ind_cart['note'];
+                            array_push($temp['item'], $_SESSION['cart']['tmall_shop'][$row]);
+                        }
+                        array_push($data['item_orders'], $temp);
+                    }
+                }
+            }
+    
+            if ($key == 2) {
+                foreach ($owner_type as $lab => $id_owner) {
+                    $temp['item'] = [];
+                    $temp['owner_type'] = $key;
+                    $temp['id_owner'] = $lab;
+                    foreach ($id_owner as $row => $ind_cart) {
+                        $temp['owner_name'] = $ind_cart['owner_name'];
+                        $temp['rate'] = $ind_cart['rate'];
+                        // $temp['od_note'] = $ind_cart['note'];
+                        foreach ($ind_cart['ind_item'] as $ind_item) {
+                            array_push($temp['item'], $_SESSION['cart']['1688_market'][$row]['stuffs'][$ind_item]);
+                        }
+                    }
+                    array_push($data['item_orders'], $temp);
+                }
+            }
+    
+            if ($key == 3) {
+                foreach ($owner_type as $lab => $id_owner) {
+                    $temp['item'] = [];
+                    $temp['owner_type'] = $key;
+                    $temp['id_owner'] = $lab;
+                    foreach ($id_owner as $row => $ind_cart) {
+                        $temp['owner_name'] = $ind_cart['owner_name'];
+                        $temp['rate'] = $ind_cart['rate'];
+                        // $temp['od_note'] = $ind_cart['note'];
+                        foreach ($ind_cart['ind_item'] as $ind_item) {
+                            array_push($temp['item'], $_SESSION['cart']['taobao_market'][$row]['stuffs'][$ind_item]);
+                        }
+                    }
+                    array_push($data['item_orders'], $temp);
+                }
             }
         }
 
-        if ($data['owner_type'] == 2) {
-            $data['item_orders'] = $_SESSION['cart']['1688_market'][$request->index_cart]['stuffs'];
-        }
-
-        if ($data['owner_type'] == 3) {
-            $data['item_orders'] = $_SESSION['cart']['taobao_market'][$request->index_cart]['stuffs'];
-        }
-
-        $data['rate'] = $request->rate;
-        $data['note'] = $request->note;
+        // dd($data['item_orders']);
 
         return view('users.make-order', $data);
     }
 
-
     public function add_order(Request $request)
     {
+        $order_lst = json_decode($request->order_lst, true);
+        // dd($order_lst);
+
         if (isset($_SESSION['cart'])) {
-            $obj = new Order();
-            $obj->id_user = Auth::user()->id;
-            $obj->deposit = $request->deposit;
-            $obj->sites = $request->owner_type;
-            $obj->id_owner = $request->id_owner;
-            $obj->owner_name = $request->owner_name;
-            $obj->transport_cn = 0;
-            $obj->note = $request->note;
-            $obj->exchange_rate = $request->rate;
-            $obj->lading = null;
-            $obj->weight = null;
-            $obj->day_start = date("Y-m-d h:i:s");
-            $obj->day_finish = null;
-            $obj->picture = [];
-            $obj->status = 0;
-            $obj->fee_service = Auth::user()->buy_fee;
-            $obj->save();
+            try {
 
-            $id_order = $obj->id;
-            $owner_type = $request->owner_type;
-            $stuffs = null;
+                foreach ($order_lst as $key => $value) {
+                
+                    $owner_type = $value['owner_type'];
 
-            if ($owner_type == 1) {
-                if ($request->id_owner != -1) {
-                    $stuffs = $_SESSION['cart']['tmall_market'][$request->index_cart]['stuffs'];
-                } else {
-                    $stuffs = $_SESSION['cart']['tmall_shop'];
+                    $obj = new Order();
+                    $obj->id_user = Auth::user()->id;
+                    $obj->sites = $owner_type;
+                    $obj->id_owner = $value['id_owner'];
+                    $obj->owner_name = $value['owner_name'];
+                    $obj->transport_cn = 0;
+                    // $obj->note = $value['od_note'];
+                    $obj->exchange_rate = $value['rate'];
+
+                    $obj->lading = null;
+                    $obj->weight = null;
+                    $obj->day_start = date("Y-m-d h:i:s");
+                    $obj->day_finish = null;
+                    $obj->picture = [];
+                    //$obj->is_paid = 0;
+                    $obj->fee_service = Auth::user()->buy_fee;
+                    $obj->status = 0;
+                    $obj->save();
+
+                    $id_order = $obj->id;
+                    $temp_deposit = 0;
+
+                    foreach ($value['item'] as $lab => $item) {
+                        $stuff = new Stuff();
+                        $stuff->id_order = $id_order;
+                        $stuff->id_stuff = $item['id_stuff'];
+                        $stuff->name = $item['name'];
+                        $stuff->link = $item['link'];
+                        $stuff->quantity = $item['quantity'];
+                        $stuff->price = $item['price'];
+                        $stuff->note = $item['note'];
+                        $stuff->id = Uuid::generate()->string;
+                        $stuff->picture = $item['picture'];
+
+                        $temp_deposit = $temp_deposit*1 + $item['price']*$value['rate']*$item['quantity'];
+
+                        if (isset($item['props']) && isset($item['props']) != null) {
+                            $stuff->props = json_encode($item['props']);
+                        }
+                        $stuff->save();
+                    }
+
+                    $obj->deposit = ($temp_deposit/100)*(Auth::user()->per_deposit);
+                    $obj->save();
+
+                    $comment = new CommentsOrders();
+                    $comment->content = htmlspecialchars('<span class="text-red">Tạo đơn hàng </span><a>' . formatorderid($obj->created_at, $id_order) . '</a>');
+                    $comment->id_order = $id_order;
+                    $comment->id_user = Auth::user()->id;
+                    $comment->save();
                 }
+
+                return redirect('/users/success')->with('id', formatorderid($obj->created_at, $id_order));
+            } catch (\Throwable $th) {
+                echo $th->getMessage();
+                exit();
+                abort(500, "Không thể đặt hàng");
             }
-
-            if ($owner_type == 2) {
-                $stuffs = $_SESSION['cart']['1688_market'][$request->index_cart]['stuffs'];
-            }
-            if ($owner_type == 3) {
-                $stuffs = $_SESSION['cart']['taobao_market'][$request->index_cart]['stuffs'];
-            }
-
-            //dd($stuffs);
-
-            for ($i = 0; $i < count($stuffs); $i++) {
-                $stuff = new Stuff();
-                $stuff->id_order = $id_order;
-                $stuff->id_stuff = $stuffs[$i]['id_stuff'];
-                $stuff->name = $stuffs[$i]['name'];
-                $stuff->link = $stuffs[$i]['link'];
-                $stuff->quantity = $stuffs[$i]['quantity'];
-                $stuff->price = $stuffs[$i]['price'];
-                $stuff->note = $stuffs[$i]['note'];
-                $stuff->id = Uuid::generate()->string;
-                $stuff->picture = $stuffs[$i]['picture'];
-                if ($stuffs[$i]['props'] != null) {
-                    $stuff->props = json_encode($stuffs[$i]['props']);
-                }
-                $stuff->save();
-            }
-
-            $comment = new CommentsOrders();
-            $comment->content = htmlspecialchars('<span class="text-red">Tạo đơn hàng </span><a>QC' . $id_order . '</a>');
-            $comment->id_order = $id_order;
-            $comment->id_user = Auth::user()->id;
-            $comment->save();
-
-            if ($request->deposit > 0) {
-                //tru tien cua user sau khi dat hang
-                $user = User::find(Auth::user()->id);
-                $user->amount = $user->amount - $request->deposit;
-                $user->save();
-
-                $comment = new CommentsOrders();
-                $comment->content = htmlspecialchars('<span class="text-red">Đặt cọc đơn hàng </span><a>QC' . $id_order . '</a>:&nbsp;<strong><span class="text-green">' . formatVNDString($request->deposit) . '</span></strong>');
-                $comment->id_order = $id_order;
-                $comment->id_user = Auth::user()->id;
-                $comment->save();
-
-
-                $stm = new Statements();
-                $stm->content = htmlspecialchars('<span class="text-red">Đặt cọc đơn hàng </span><a>QC' . $id_order . '</a>');
-                $stm->created_at =  now()->timestamp;
-                $stm->type = 2; //đat coc
-                $stm->is_sub = 1;
-                $stm->amount = $request->deposit;
-                $stm->method = 3; //tien quy doi
-                $stm->id_user =  Auth::user()->id;
-                $stm->id_order = $id_order;
-                $stm->status = 1;
-                $stm->save();
-            }
-            return redirect('/users/success');
         } else {
             //thông báo giỏ hàng trống
         }

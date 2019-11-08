@@ -40,6 +40,90 @@ $(document).ready(function () {
         });
     })
 
+    $('.btn-change-fee-transport-cn-vn').click(function () {
+        let id = $(this).attr('data-id');
+        let input = $(this).parent().parent().find('.input-fee-transport-cn-vn');
+        $.ajax({
+            type: "post",
+            url: BASE_API + "orders/change_fee_transport_cn_vn",
+            data: { id: id, fee: input.val() },
+            dataType: "json",
+            success: function (response) {
+
+            }
+        });
+    })
+
+    $('.btn-change-fee-service').click(function () {
+        let id = $(this).attr('data-id');
+        let input = $(this).parent().parent().find('.input-fee-service');
+        $.ajax({
+            type: "post",
+            url: BASE_API + "orders/change_fee_service",
+            data: { id: id, fee: input.val() },
+            dataType: "json",
+            success: function (response) {
+
+            }
+        });
+    })
+
+    $('.btn-change-weight').click(function () {
+        let id = $(this).attr('data-id');
+        let input = $(this).parent().parent().find('.input-weight');
+        $.ajax({
+            type: "post",
+            url: BASE_API + "orders/change_weight",
+            data: { id: id, fee: input.val() },
+            dataType: "json",
+            success: function (response) {
+
+            }
+        });
+    })
+
+
+
+
+
+
+    $('.btn-add-link').click(function () {
+        let thiss = $(this);
+        let id = $(this).attr('data-id');
+        let input = $(this).parent().parent().find('.input-add-link');
+        $.ajax({
+            type: "post",
+            url: BASE_API + "orders/add_link",
+            data: { id: id, link: input.val() },
+            dataType: "json",
+            success: function (response) {
+                let id = response.id;
+                let html_link = '<div class="link-elm" style="display: flex;">' 
+                html_link += '<a style="display: block" href="'+input.val()+'" target="_blank">'+input.val()+'</a>';
+                html_link += '<a class="btn-del-link text-red" data-id="'+id+'">Xoá</a>';
+                html_link += '</div>';
+                thiss.parent().parent().find('.wrap-links').append(html_link);
+            }
+        });
+    })
+
+    $('.wrap-links').on('click', '.btn-del-link', function () {
+        let thiss = $(this);
+        let id = $(this).attr('data-id');
+        $.ajax({
+            type: "post",
+            url: BASE_API + "orders/del_link",
+            data: { id: id },
+            dataType: "json",
+            success: function (response) {
+                thiss.closest('.link-elm').remove();
+            }
+        });
+    })
+
+
+
+
     $('.btn-change-wood-package').click(function () {
         let id = $(this).attr('data-id');
         let input = $(this).parent().parent().find('.input-fee-wood-package');

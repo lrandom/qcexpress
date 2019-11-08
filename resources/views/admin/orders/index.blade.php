@@ -1,5 +1,6 @@
 <?php
     use App\CommentsOrders as CommentsOrders;
+    use App\Links as Links;
     $total_quantity = 0;
     $total_price    = 0;
 ?>
@@ -279,25 +280,50 @@
                                 @endif
                                 <span style="float:left">
                                     <div>
-                                        <input name="edit-link" style="display:none"/>
-                                        <a href="{{$r1->link}}" target="_blank"  style="width: 250px;
+                                        <style>
+                                            .link-elm{
+                                                display: flex;
+                                            }
+                                            .path{
+                                                width: 250px;
                                                 white-space: nowrap;
                                                 overflow: hidden;
                                                 display:block;
-                                                text-overflow: ellipsis;">{{$r1->name}}</a>&nbsp;
-                                        <a class="btn btn-success btn-xs btn-edit-link">sửa</a>
-                                        <a class="btn btn-success btn-xs btn-update-link" style="display:none" data-id="{{$r1->id}}">xong</a>
+                                                text-overflow: ellipsis;
+                                            }
+                                        </style>
+
+                                        <div class="wrap-links">
+                                            <div class="link-elm">
+                                                <a href="{{$r1->link}}" target="_blank" class="path">{{$r1->name}}</a>&nbsp;
+                                                <hr>
+                                            </div>
+
+                                            <?php $links = Links::where('id_stuff', '=', $r1->id)->get();
+                                            if($links != null){
+                                                foreach ($links as $link_stuff){ ?>
+                                                    <div class="link-elm">
+                                                        <a href="{{$link_stuff->path}}" target="_blank" class="path">{{$link_stuff->path}}</a>&nbsp;
+                                                        <a class="btn-del-link text-red" data-id="{{$link_stuff->id}}">Xoá</a>
+                                                        <hr>
+                                                    </div>
+                                                <?php }
+                                            }?>
+                                        </div>
+
+                                        <input class="input-add-link" name="input-add-link"/>
+                                        <a class="btn btn-success btn-xs btn-add-link" data-id="{{$r1->id}}">thêm</a>
                                     </div>
-                            <div>
-                               <?php
-                                  if($r1->props!=null){
-                                    $props = json_decode($r1->props);
-                                    foreach ($props as $prop) {
-                                      echo $prop->name.'-'.$prop->val.'<br>';
-                                    }
-                                  }
-                                ?>
-                            </div>
+                                    <div>
+                                        <?php
+                                            if($r1->props!=null){
+                                            $props = json_decode($r1->props);
+                                            foreach ($props as $prop) {
+                                                echo $prop->name.'-'.$prop->val.'<br>';
+                                            }
+                                            }
+                                        ?>
+                                    </div>
                                 </span>
                             </div>
                         </td>
@@ -377,6 +403,15 @@
                                                 <a href="javascript:void(0);" class="btn btn-success btn-xs btn-change-fee-inland-transport" data-id="{{$r->id}}">Cập nhật</a>
                                             </td>
                                         </tr>
+
+                                        <tr>
+                                            <td class="text-right">Vận chuyển về VN (¥)</td>
+                                            <td>
+                                                <input type="number" value="{{$r->transport_cn_vn}}" class="text-center input-fee-transport-cn-vn"/>
+                                                <a href="javascript:void(0);" class="btn btn-success btn-xs btn-change-fee-transport-cn-vn" data-id="{{$r->id}}">Cập nhật</a>
+                                            </td>
+                                        </tr>
+
                                         <tr>
                                             <td class="text-right">Phí đóng kiện gỗ (¥)</td>
                                             <td>
@@ -384,6 +419,15 @@
                                                 <a href="javascript:void(0);" class="btn btn-success btn-xs btn-change-wood-package" data-id="{{$r->id}}">Cập nhật</a>
                                             </td>
                                         </tr>
+
+                                        <tr>
+                                            <td class="text-right">Cân nặng (kg)</td>
+                                            <td>
+                                             <input type="number" value="{{$r->weight}}" class="text-center input-weight"/>
+                                             <a href="javascript:void(0);" class="btn btn-success btn-xs btn-change-weight" data-id="{{$r->id}}">Cập nhật</a>
+                                            </td>
+                                        </tr>
+
                                         <tr>
                                             <td class="text-right">Mã đơn hàng TQ</td>
                                             <td>

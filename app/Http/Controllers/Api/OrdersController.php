@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Order;
 use App\User;
+use App\Links;
 use Illuminate\Support\Facades\Auth;
 use Webpatser\Uuid\Uuid;
 
@@ -20,6 +21,77 @@ class OrdersController extends Controller
         $obj->transport_cn = $fee;
         try {
             $obj->save();
+            return response()->json(['success' => 1], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => 0, 'msg' => $th->getMessage()], 500);
+        }
+    }
+
+    public function change_fee_transport_cn_vn(Request $request)
+    {
+        $fee = $request->fee;
+        $id = $request->id;
+        $obj = Order::find($id);
+        $obj->transport_cn_vn = $fee;
+        try {
+            $obj->save();
+            return response()->json(['success' => 1], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => 0, 'msg' => $th->getMessage()], 500);
+        }
+    }
+
+    public function change_fee_service(Request $request)
+    {
+        $fee = $request->fee;
+        $id = $request->id;
+        $obj = Order::find($id);
+        $obj->fee_service = $fee;
+        try {
+            $obj->save();
+            return response()->json(['success' => 1], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => 0, 'msg' => $th->getMessage()], 500);
+        }
+    }
+
+    public function change_weight(Request $request)
+    {
+        $fee = $request->fee;
+        $id = $request->id;
+        $obj = Order::find($id);
+        $obj->weight = $fee;
+        try {
+            $obj->save();
+            return response()->json(['success' => 1], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => 0, 'msg' => $th->getMessage()], 500);
+        }
+    }
+
+    public function add_link(Request $request)
+    {
+        $temp_id = Uuid::generate()->string;
+        $link = $request->link;
+        $id_stuff = $request->id;
+        $obj = new Links();
+        $obj->id = $temp_id;
+        $obj->path = $link;
+        $obj->id_stuff = $id_stuff;
+        try {
+            $obj->save();
+            return response()->json(['success' => 1, 'id' => $temp_id], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => 0, 'msg' => $th->getMessage()], 500);
+        }
+    }
+
+    public function del_link(Request $request)
+    {
+        $id = $request->id;
+        $obj = Links::find($id);
+        try {
+            $obj->delete();
             return response()->json(['success' => 1], 200);
         } catch (\Throwable $th) {
             return response()->json(['success' => 0, 'msg' => $th->getMessage()], 500);

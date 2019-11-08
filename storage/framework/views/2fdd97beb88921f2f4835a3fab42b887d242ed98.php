@@ -1,8 +1,7 @@
-@extends('layouts.user')
-@section('header',__('main.address'))
-@section('small_header','')
-@section('content')
-<link rel="stylesheet" type="text/css" href="{{asset('public/css/cart.css?x='.time())}}"/>
+<?php $__env->startSection('header',__('main.address')); ?>
+<?php $__env->startSection('small_header',''); ?>
+<?php $__env->startSection('content'); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo e(asset('public/css/cart.css?x='.time())); ?>"/>
 
 
 <style>
@@ -102,7 +101,7 @@
             <div class="marker">
                 <i class="fa fa-shopping-cart"></i>
             </div>
-            <span class="marker-title">{{__('main.cart')}}</span>
+            <span class="marker-title"><?php echo e(__('main.cart')); ?></span>
         </div>
 
         <div class="marker-wrapper marker-two">
@@ -116,7 +115,7 @@
             <div class="marker">
                 <i class="fa fa-list"></i>
             </div>
-            <span class="marker-title">{{__('main.singles')}}</span>
+            <span class="marker-title"><?php echo e(__('main.singles')); ?></span>
         </div>
     </div>
 
@@ -124,18 +123,18 @@
 
 
 
-<form role="form" action="{{URL::to('users/cart/add_order')}}" method="post">
-  @csrf
+<form role="form" action="<?php echo e(URL::to('users/cart/add_order')); ?>" method="post">
+  <?php echo csrf_field(); ?>
   
-  <input type="hidden" name="order_lst" value="{{json_encode($item_orders)}}">
+  <input type="hidden" name="order_lst" value="<?php echo e(json_encode($item_orders)); ?>">
 
-  {{-- <input type="hidden" value="{{$index_cart}}" name="index_cart"/> --}}
-  {{-- <input type="hidden" value="{{$owner_type}}" name="owner_type"/> --}}
-  {{-- <input type="hidden" value="{{$note}}" name="note"/> --}}
-  {{-- <input type="hidden" value="{{$id_owner}}" name="id_owner"/> --}}
-  {{-- <input type="hidden" value="{{$owner_name}}" name="owner_name"/> --}}
-  {{-- <input type="hidden" value="{{$rate}}" name="rate"/> --}}
-  {{-- <input type="hidden" value="{{$total}}" name="total"/> --}}
+  
+  
+  
+  
+  
+  
+  
 
   <div class="row">
 
@@ -143,7 +142,7 @@
       <div class="box box-primary">
         <div class="box-body">
             
-            {{-- <p>Nguời bán: <strong>{{$owner_name}}</strong></p> --}}
+            
 
             <div class="box-body">
               <table>
@@ -163,16 +162,16 @@
                         }
                       } 
                     ?>
-                    @foreach ($item_orders as $od)
-                      @foreach ($od['item'] as $item)
+                    <?php $__currentLoopData = $item_orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $od): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <?php $__currentLoopData = $od['item']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                          <td><img style="height: 70px; width: 70px;margin-top:10px" src="{{$item['picture']}}" alt=""></td>
-                          <td>{{$item['name']}}</td>
-                          <td style="text-align: right;">{{$item['quantity']}}</td>
-                          <td style="text-align: right;">{{formatVND($item['price']*$item['rate']*$item['quantity'])}}</td>
+                          <td><img style="height: 70px; width: 70px;margin-top:10px" src="<?php echo e($item['picture']); ?>" alt=""></td>
+                          <td><?php echo e($item['name']); ?></td>
+                          <td style="text-align: right;"><?php echo e($item['quantity']); ?></td>
+                          <td style="text-align: right;"><?php echo e(formatVND($item['price']*$item['rate']*$item['quantity'])); ?></td>
                         </tr>
-                      @endforeach
-                    @endforeach
+                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                 </tbody>
               </table>
@@ -183,15 +182,15 @@
             <div class="" style="display: flex;">
               <div class="" style="flex: 1">
                   <br>
-                  @php
+                  <?php
                       $buy_fee = Auth::user()->buy_fee;
-                  @endphp
-                  {{-- <input type="hidden" value="{{($total/100)*(Auth::user()->per_deposit)}}" name="deposit"/> --}}
-                  <p class="text-right"><b>Tổng: <span class="text-red">{{formatVND($total)}}</span></b></p>
-                  <p class="text-right"><b>Phí mua hàng: <span class="text-red">{{formatVND(($total/100)*$buy_fee)}}</span></b></p>
-                  <p class="text-right"><b>Đặt cọc({{Auth::user()->per_deposit}}%): <span class="text-red"> {{formatVND(($total/100)*(Auth::user()->per_deposit))}}</span></b></p>
-                  <p class="text-right"><b>Tạm tính: <span class="text-red" style="font-size: 20px;">{{formatVND($total + (($total/100)*$buy_fee))}}</span></b></p>
-                  <p class="text-right"><b>Số dư hiện tại:  <span class="text-green" style="font-size: 18px;">{{formatVND(Auth::user()->amount)}}</span></b></p>
+                  ?>
+                  
+                  <p class="text-right"><b>Tổng: <span class="text-red"><?php echo e(formatVND($total)); ?></span></b></p>
+                  <p class="text-right"><b>Phí mua hàng: <span class="text-red"><?php echo e(formatVND(($total/100)*$buy_fee)); ?></span></b></p>
+                  <p class="text-right"><b>Đặt cọc(<?php echo e(Auth::user()->per_deposit); ?>%): <span class="text-red"> <?php echo e(formatVND(($total/100)*(Auth::user()->per_deposit))); ?></span></b></p>
+                  <p class="text-right"><b>Tạm tính: <span class="text-red" style="font-size: 20px;"><?php echo e(formatVND($total + (($total/100)*$buy_fee))); ?></span></b></p>
+                  <p class="text-right"><b>Số dư hiện tại:  <span class="text-green" style="font-size: 18px;"><?php echo e(formatVND(Auth::user()->amount)); ?></span></b></p>
 
                   <br>
 
@@ -210,4 +209,5 @@
 </form>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.user', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/XAMPP/xamppfiles/htdocs/qc_express/resources/views/users/make-order.blade.php ENDPATH**/ ?>

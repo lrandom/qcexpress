@@ -30,6 +30,11 @@ Route::group(['prefix' => 'stuffs'], function () {
 
 Route::group(['prefix' => 'orders'], function () {
     Route::post('/change_fee_inland_transport', 'Api\OrdersController@change_fee_inland_transport');
+    Route::post('/change_fee_transport_cn_vn', 'Api\OrdersController@change_fee_transport_cn_vn');
+    Route::post('/change_fee_service', 'Api\OrdersController@change_fee_service');
+    Route::post('/change_weight', 'Api\OrdersController@change_weight');
+    Route::post('/add_link', 'Api\OrdersController@add_link');
+    Route::post('/del_link', 'Api\OrdersController@del_link');
     Route::post('/change_status', 'Api\OrdersController@change_status');
     Route::post('/change_exchange_rate', 'Api\OrdersController@change_exchange_rate');
     Route::post('/change_lading', 'Api\OrdersController@change_lading');

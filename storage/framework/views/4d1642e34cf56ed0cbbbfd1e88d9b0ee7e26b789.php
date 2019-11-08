@@ -457,7 +457,7 @@
                                             <td>
                                              
                                                 <?php
-                                                  $total_price = ($total_price + (($total_price/100)*($r->buy_fee)) + ($r->transport_cn) + ($r->wood_package)+ $fee_service);
+                                                  $total_price = ($total_price + (($total_price/100)*($r->buy_fee)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package)+ $fee_service);
                                                 ?>
                                                 <?php echo e(formatCNY($total_price)); ?><br>
                                                 <?php echo e(formatVND($total_price*$r->exchange_rate)); ?>

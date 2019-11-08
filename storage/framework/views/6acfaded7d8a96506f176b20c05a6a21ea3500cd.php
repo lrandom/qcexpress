@@ -427,12 +427,12 @@ case (null): ?>
 
                             <tr>
                                 <?php
-                                  $miss_pay = ($total_price + (($total_price/100)*($r->fee)) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate) - ($r->deposit);
+                                  $miss_pay = ($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate) - ($r->deposit);
                                 ?>
                                 <td><b>Tổng đơn hàng</b></td>
                                 <td>
-                                    <b><?php echo e(formatCNY(($total_price + (($total_price/100)*($r->fee)) + ($r->transport_cn) + ($r->wood_package)))); ?></b>
-                                    - <b><?php echo e(formatVND(($total_price + (($total_price/100)*($r->fee)) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate))); ?></b>
+                                    <b><?php echo e(formatCNY(($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package)))); ?></b>
+                                    - <b><?php echo e(formatVND(($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate))); ?></b>
                                 </td>
                             </tr>
 

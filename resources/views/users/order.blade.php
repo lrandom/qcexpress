@@ -248,8 +248,8 @@
                 <td class="text-center">{{$index}}</td>
                 <td style="width: 40%; vertical-align: center;">
                     <div style="display: flex; align-content: center;">
-                      @if ($r->picture!=null)
-                        <img class="lazyload" style="float:left;width:85px;margin-right:10px" src="{{$r1->picture}}">
+                      @if ($r1->picture!=null)
+                        <img style="float:left;width:85px;margin-right:10px" src="{{$r1->picture}}">
                       @endif
                         <span style="float:left">
                             <div><a href="{{$r1->link}}" target="_blank" style=" width: 250px;

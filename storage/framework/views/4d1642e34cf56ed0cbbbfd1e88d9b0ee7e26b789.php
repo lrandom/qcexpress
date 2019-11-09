@@ -403,7 +403,7 @@
                                         </tr>
 
                                         <tr>
-                                            <td class="text-right">Vận chuyển về VN (¥)</td>
+                                            <td class="text-right">Vận chuyển về VN (vnđ)</td>
                                             <td>
                                                 <input type="number" value="<?php echo e($r->transport_cn_vn); ?>" class="text-center input-fee-transport-cn-vn"/>
                                                 <a href="javascript:void(0);" class="btn btn-success btn-xs btn-change-fee-transport-cn-vn" data-id="<?php echo e($r->id); ?>">Cập nhật</a>
@@ -455,17 +455,14 @@
 
                                             <td class="text-right">Tổng tiền đơn hàng</td>
                                             <td>
-                                             
                                                 <?php
-                                                  $total_price = ($total_price + (($total_price/100)*($r->buy_fee)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package)+ $fee_service);
+                                                  $total_price = ($total_price + (($total_price/100)*($r->buy_fee)) + ($r->transport_cn) + ($r->wood_package)+ $fee_service);
                                                 ?>
                                                 <?php echo e(formatCNY($total_price)); ?><br>
-                                                <?php echo e(formatVND($total_price*$r->exchange_rate)); ?>
+                                                <?php echo e(formatVND(($total_price*$r->exchange_rate) + ($r->transport_cn_vn))); ?>
 
                                             </td>
                                         </tr>
-
-
 
                                         <?php if($r->is_final==0): ?>
                                         <tr>
@@ -475,7 +472,7 @@
 
                                         <tr>
                                             <td class="text-right">Còn thiếu</td>
-                                            <td><strong style="color:red"><?php echo e(formatVND($total_price*$r->exchange_rate - $r->deposit)); ?></strong></td>
+                                            <td><strong style="color:red"><?php echo e(formatVND(($total_price*$r->exchange_rate) + ($r->transport_cn_vn) - ($r->deposit))); ?></strong></td>
                                         </tr>
     
                                         <?php endif; ?>

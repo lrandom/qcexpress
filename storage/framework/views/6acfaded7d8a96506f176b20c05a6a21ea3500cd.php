@@ -363,11 +363,8 @@ case (null): ?>
                             <tr>
                                 <td class="">Phí vận chuyển Trung Việt</td>
                                 <td>
-                                    <?php if($r->transport_cn_vn!=null): ?>  
-                                     <?php echo e(formatCNY($r->transport_cn_vn)); ?>
-
-                                       -
-                                     <?php echo e(formatVND($r->transport_cn_vn*$r->exchange_rate)); ?>
+                                    <?php if($r->transport_cn_vn!=null): ?>
+                                      <?php echo e(formatVND($r->transport_cn_vn)); ?>
 
                                     <?php else: ?>
                                       -    
@@ -427,12 +424,12 @@ case (null): ?>
 
                             <tr>
                                 <?php
-                                  $miss_pay = ($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate) - ($r->deposit);
+                                  $miss_pay = (($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate)) + ($r->transport_cn_vn) - ($r->deposit);
                                 ?>
                                 <td><b>Tổng đơn hàng</b></td>
                                 <td>
-                                    <b><?php echo e(formatCNY(($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package)))); ?></b>
-                                    - <b><?php echo e(formatVND(($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn_vn) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate))); ?></b>
+                                    <b><?php echo e(formatCNY(($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn) + ($r->wood_package)) + (($r->transport_cn_vn)/($r->exchange_rate)))); ?></b>
+                                    - <b><?php echo e(formatVND(($total_price + (($total_price/100)*($r->fee_service)) + ($r->transport_cn) + ($r->wood_package))*($r->exchange_rate) + ($r->transport_cn_vn))); ?></b>
                                 </td>
                             </tr>
 

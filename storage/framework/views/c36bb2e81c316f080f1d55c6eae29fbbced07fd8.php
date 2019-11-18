@@ -108,7 +108,7 @@
                                             <ul class="dropdown-menu">
                                                 <li class="signin_dropdown">
                                                     <a href="<?php echo e(URL::to('users/account')); ?>">Tài khoản</a>
-                                                    <a href="<?php echo e(asset('users/orders')); ?>">Đến phần quản lý đơn hàng</a>
+                                                    <a href="<?php echo e(asset('users/orders/-1')); ?>">Đến phần quản lý đơn hàng</a>
                                                     <a href="<?php echo e(asset('users/password')); ?>"><?php echo e(__('main.password')); ?></a>
                                                     <a href="<?php echo e(asset('users/logout')); ?>">Thoát</a>
                                                 </li>

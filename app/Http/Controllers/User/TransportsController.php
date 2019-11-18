@@ -9,8 +9,6 @@ use App\Cities;
 use App\ShipAddress;
 use App\Provinces;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\CommentsOrders;
@@ -18,40 +16,8 @@ use App\Statements;
 
 class TransportsController extends Controller
 {
-    // public function request_transport()
-    // {
-    //     $provinces = Provinces::get();
-    //     $cities = Cities::where('cities.matp', '=', $provinces[0]->matp)->get();
-    //     $list_ship = DB::table('ship_address')->where('id_user', Auth::user()->id)->get();
-    //     $data['list_ship_address'] = $list_ship;
-    //     $data['provinces'] = $provinces;
-    //     $data['cities'] = $cities;
-
-    //     $list = Order::where([
-    //         ['orders.id_user', '=', Auth::user()->id],
-    //         ['orders.status', '=', 7],
-    //         ['orders.ship_request', '=', 0]
-    //     ])->orwhere('orders.ship_request', '=', 1)
-    //         ->orderBy('id', 'DESC')
-    //         ->paginate(15);
-
-    //     foreach ($list as $r) {
-    //         $stuffs  = DB::table('stuffs')->where('id_order', '=', $r->id)->get();
-    //         $r->stuffs = $stuffs;
-    //     }
-
-    //     $data['list'] = $list;
-    //     return view('users.request-transport', $data);
-    // }
-
     public function send_request(Request $request)
     {
-
-        // <input type="text" name="receiver" placeholder="nguời nhận" class="form-control"/>
-        // <textarea name="address" placeholder="Địa chỉ" class="form-control" style="margin-top:10px"></textarea>
-        // <input type="text" name="phone" placeholder="SDT" class="form-control"  style="margin-top:10px"/>
-
-
         $obj = Order::find($request->id);
         $obj->ship_request = 1;
         $obj->receiver = $request->receiver;
@@ -59,39 +25,17 @@ class TransportsController extends Controller
         $obj->address = $request->address;
         $obj->id_address = $request->id_address;
         $obj->save();
-        return back();
+        return back()->with('notify', 'Yêu cầu giao hàng của bạn đã đuợc gửi đi');
     }
 
-    // public function upload_img(Request $request)
-    // {
-    //     $obj = Order::find($request->id);
-
-    //     $arr = $obj->picture;
-    //     $i = 0;
-    //     if ($request->picture) {
-    //         foreach ($request->picture as $key => $item) {
-    //             if ($item != null) {
-    //                 $file = $item;
-    //                 $newFileName =  time() . $i . '.' . $file->getClientOriginalExtension();
-    //                 $file->move(public_path('pictures/complaints'), $newFileName);
-    //                 $temp = 'pictures/complaints/' . $newFileName;
-    //                 if (isset($arr[$key]) && $arr[$key] != null) {
-    //                     File::delete($arr[$key]);
-    //                     $arr[$key] = $temp;
-    //                 } else {
-    //                     array_push($arr, $temp);
-    //                 }
-    //                 $i++;
-    //             }
-    //         }
-    //     }
-    //     $obj->picture = $arr;
-    //     $obj->save();
-
-    //     return back()->with('notify', 'Upload ảnh thành công');
-    // }
-
-
+    public function received_goods(Request $request, $id)
+    {
+        $obj = Order::find($id);
+        $obj->status = 9;
+        $obj->ship_request = 6;
+        $obj->save();
+        return back()->with('notify', 'Cảm ơn bạn đã xác nhận');
+    }
 
     public function index(Request $request, $status)
     {
@@ -103,30 +47,24 @@ class TransportsController extends Controller
         $data['cities'] = $cities;
 
         $query = Order
-            //::leftJoin('ship_address', 'orders.id_address', '=', 'ship_address.id')
-            // ->leftJoin('provinces', 'provinces.matp', '=', 'ship_address.province_id')
-            // ->leftJoin('cities', 'cities.maqh', '=', 'ship_address.city_id')
             ::join('users', 'orders.id_user', '=', 'users.id')
             ->select(
                 'orders.*',
                 'orders.id as id',
                 'users.fullname as fullname'
-                // 'ship_address.id as id_address',
-                // 'ship_address.phone as phone',
-                // 'ship_address.address as address',
-                // 'provinces.name as provinces_name',
-                // 'cities.name as cities_name'
             )
             ->orderBy('orders.id', 'DESC');
 
         if ($status != -1) {
             $query->where('orders.ship_request', $status);
+            $data['title'] = 'Phiếu giao hàng';
         } else {
             $query->where('orders.status', 7)->where('orders.ship_request', 0);
         }
         $list = $query->paginate(15);
         $data['list'] = $list;
         $data['status'] = $status;
+
         return view('users.request-transport', $data);
     }
 
@@ -158,7 +96,7 @@ class TransportsController extends Controller
             $stm = new Statements();
             $stm->content = htmlspecialchars('<span class="text-red">Thanh toán phí vận chuyển nội địa đơn hàng</span><a>QC' .  $request->id . '</a>');
             $stm->created_at =  now()->timestamp;
-            $stm->type = 2; //thanh toan
+            $stm->type = 3; //thanh toan
             $stm->is_sub = 1;
             $stm->amount = $request->ship_fee;
             $stm->method = 3; //tien quy doi
@@ -171,54 +109,6 @@ class TransportsController extends Controller
         }
         return redirect('users/finance/deposit');
     }
-
-
-
-    // public function bill_transport(Request $request)
-    // {
-    //     $list_ship = DB::table('ship_address')->where('id_user', Auth::user()->id)->get();
-
-    //     $data['list_ship_address'] = $list_ship;
-
-    //     $query = Order::join('ship_address', 'ship_address.id', '=', 'orders.id_address')
-    //         ->join('users', 'ship_address.id_user', '=', 'users.id')
-    //         ->select('orders.*', 'orders.id as id', 'users.fullname as fullname', 'ship_address.id as id_address', 'ship_address.phone as phone', 'ship_address.address as address')
-    //         ->orderBy('id', 'DESC');
-
-    //     $list = null;
-
-    //     if ($request->id != null) {
-    //         $list = $query->where([
-    //             ['orders.id_user', '=', Auth::user()->id],
-    //             ['orders.is_final', '=', 1],
-    //             ['orders.ship_request', '=', 3],
-    //             ['orders.status', '=', $request->id],
-    //         ])->paginate(15);
-    //     } else {
-    //         $list = $query->where([
-    //             ['orders.id_user', '=', Auth::user()->id],
-    //             ['orders.is_final', '=', 1],
-    //             ['orders.ship_request', '=', 3],
-    //             ['orders.status', '!=', 8],
-    //             ['orders.status', '!=', 9]
-    //         ])->paginate(15);
-    //     }
-
-    //     foreach ($list as $r) {
-    //         $stuffs  = DB::table('stuffs')->where('id_order', '=', $r->id)->get();
-    //         $r->stuffs = $stuffs;
-    //     }
-
-    //     $data['list'] = $list;
-    //     return view('users.bill-transport', $data);
-    // }
-
-
-
-
-
-
-
 
 
     // =================== address ===============

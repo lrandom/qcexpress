@@ -67,7 +67,7 @@
                             <!-- /.entry-header -->
                             <br><br>
                             <div class="entry-content">
-                                <p>{!!  ($post->contents) !!}</p>
+                                <p> <?php echo htmlspecialchars_decode($post->contents)?></p>
                             </div>
                             <!-- /.entry-content -->
 

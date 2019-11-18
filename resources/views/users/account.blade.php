@@ -82,15 +82,15 @@
 
 
 
-  <div class="col-md-12">
+  {{-- <div class="col-md-12">
     <div class="box box-info col-sm-12">
 
       <div class="box-header with-border row">
         <h3 class="box-title">{{__('main.ship_address')}}</h3>
       </div>
       
-      <br><br>
-
+      <br><br> --}}
+{{-- 
       @if ($address != null)
         @foreach ($address as $item)
           <div class="row">
@@ -112,14 +112,14 @@
           </div>
           <hr>
         @endforeach
-      @endif
+      @endif --}}
           
-      <div class="row form-add-address col-sm-12">
+      {{-- <div class="row form-add-address col-sm-12">
         <button class="btn btn-success btn-add-address" data-toggle="modal" data-target="#addAddressModal">{{__('main.add_ship_address')}}</button>
       </div>
       <br><br><br>
     </div>
-  </div>
+  </div> --}}
 
 
   <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog">

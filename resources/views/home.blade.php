@@ -10,44 +10,55 @@
     <div class="testimonial_section_overlay"></div>
         <div class="testimonial_info">
             <div class="carousel slide" data-ride="carousel" id="testimonial_carousel_banner">
-                <!-- Bottom Carousel Indicators -->
-                {{-- <ol class="carousel-indicators">
-                    <li data-target="#testimonial_carousel_banner" data-slide-to="0" class="active">
-                        <span class="dot-pagani"></span>
-                    </li>
-                    <li data-target="#testimonial_carousel_banner" data-slide-to="1" class="">
-                        <span class="dot-pagani"></span>
-                    </li>
-                </ol> --}}
+
                 <div class="carousel-inner text-center">
 
                     <div class="item active">
                         <div class="thumb-img">
-                            <img style="height: 100%; min-width: 100%;" src="{{asset('pictures/init/bbb.png')}}" alt="">
+                          <h5 style="color:white;text-transform:uppercase;font-size:20px">Quảng Châu Express</h5><br>
+                          <h5 style="color:white;text-transform:uppercase;font-size:40px">Đặt hàng Trung Quốc </h5><br>
+                          <h6 style="color:white;text-transform:uppercase;font-size:30px">Uy tín - tốc độ - chính xác</h6>
                         </div>
                     </div>
                     <!-- Quote 3 -->
-                   
-                    {{-- <div class="item">
-                        <div class="thumb-img">
-                            <img src="{{asset('pictures/init/ccc.png')}}" alt="">
-                        </div>
-                    </div> --}}
-
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="section_2 add-on">
+    <style>
+    .testimonial_section .thumb-img {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #0000007a;
+}
+.add-on a{
+    margin-right: 30px;
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.7);
+    overflow: auto;
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+    </style>
+
+    <div class="section_2 add-on" >
         <div class="container">
             <div class="row">
                 <div class="col-sm-5">
                     <div class="page_header_title">
-                        <h1>{{__('main.support_order')}}: {{$contact->main_phone}}</h1>
+                        <h3 style="color:white">{{__('main.support_order')}}: {{$contact->main_phone}}</h3>
                     </div>
                 </div>
-                <div class="col-sm-7 text-right">
+                <div class="col-sm-7 text-right" style="padding-top:5px">
                     <a href="{{asset($general->link_tool_chrome)}}" target="_blank">
                         <img src="{{asset('pictures/init/chrome.png')}}" alt="">
                         <span>{{__('main.link_tool_chrome')}}</span>
@@ -60,37 +71,137 @@
             </div>
         </div>
     </div>
-    
-    @if($general->link_app_android != '' || $general->link_app_ios != '')
-        <div class="section_1 app_device">
-            <div class="container">
-                <div class="row">
-                    <div style="display: flex; justify-content: center">
-                        <h1>{{__('main.install_app_on_device')}}</h1>
-                    </div>
-                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
-                        @if($general->link_app_android != '')
-                            <a href="{{$general->link_app_android}}" class="text-center">
-                                <i class="fa fa-android" style="font-size: 6em"></i>&nbsp;&nbsp;&nbsp;<p style="font-size: 1.5em; margin-top: 15px;">Android</p>
-                            </a>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        @endif
-                        @if($general->link_app_ios != '')
-                            <a href="{{$general->link_app_ios}}" class="text-center">
-                                <i class="fa fa-apple" style="font-size: 6em"></i>&nbsp;&nbsp;&nbsp;<p style="font-size: 1.5em; margin-top: 15px;">IOS</p>
-                            </a>
-                        @endif
-                    </div>
+
+     
+    <br>
+    <br>
+
+    <br>
+  
+    <div class="container cam-ket-box box" style="margin-top:20px">
+        <h4 class="text-center heading-main">Dịch vụ vận chuyển uy tín và tốc độ</h4>
+        <br><br><br>
+        <div class="row">
+            <div class="col-md-4 col-xs-12 cam-ket">
+                <div class="inner">
+                <h5>Cuớc vận chuyển siêu thấp</h5>
+                <p>Chỉ 23.000/kg</p>
+                <img src="{{asset('public/pictures/init/truck.png')}}"/>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xs-12 cam-ket">
+                <div class="inner">
+                <h5>Vận chuyển siêu nhanh</h5>
+                <p>Chỉ từ 2-4 ngày</p>
+                <img src="{{asset('public/pictures/init/stopclock.png')}}"/>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-xs-12 cam-ket">
+                <div class="inner">
+                <h5>Không cần đặt cọc</h5>
+                <p>Đối với khách hàng thân thiết</p>
+                <img src="{{asset('public/pictures/init/money.png')}}"/>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
+  
+    <div class="container-fluid bg" style="background:url('https://images.unsplash.com/photo-1542435503-956c469947f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80');background-size:cover">
+            <div class="inner"></div>
+        </div>
+
+        <br>
+    <div class="container cam-ket-box box quy-trinh" style="margin-top:20px">
+            <h4 class="text-center heading-main">Quy trình đặt hàng</h4>
+            <br><br><br>
+            <div class="row">
+                <div class="col-md-2 col-xs-12 cam-ket">
+                    <div >
+                    <div class="circle">
+                        <img src="{{asset('public/pictures/init/online-shop-5.png')}}"/>
+                    </div>
+                    <h5>Buớc 1</h5>
+                    <p>Chọn hàng tại các website trung quốc</p>
+                    </div>
+                </div>
+                <div class="col-md-2 col-xs-12 cam-ket">
+                        <div >
+                        <div class="circle">
+                           <img src="{{asset('public/pictures/init/online-shop-2.png')}}"/>
+                        </div>
+                        <h5>Buớc 2</h5>
+                        <p>Tạo đơn hàng tại <br>quangchauexpress.com</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-xs-12 cam-ket">
+                            <div >
+                            <div class="circle">
+                                    <img src="{{asset('public/pictures/init/online-shop-6.png')}}"/>
+                            </div>
+                            <h5>Buớc 3</h5>
+                            <p>Đặt cọc 50% giá trị đơn hàng</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-12 cam-ket">
+                                <div >
+                                <div class="circle">
+                                        <img src="{{asset('public/pictures/init/route.png')}}"/>
+                                </div>
+                                <h5>Buớc 4</h5>
+                                <p>Vận chuyển từ kho TQ về kho VN</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-12 cam-ket">
+                                    <div>
+                                    <div class="circle">
+                                            <img src="{{asset('public/pictures/init/shipping.png')}}"/>
+                                    </div>
+                                    <h5>Buớc 5</h5>
+                                    <p>Nhận hàng tại nhà hoặc chuyển thằng đến nguời mua</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-xs-12 cam-ket">
+                                        <div >
+                                        <div class="circle">
+                                                <img src="{{asset('public/pictures/init/shopping-bag.png')}}"/>
+                                        </div>
+                                        <h5>Buớc 6</h5>
+                                        <p>Khách nhận hàng và xác nhận</p>
+                                        </div>
+                                    </div>
+            </div>
+        </div>
+        
+
+   <div class="container-fluid bg">
+       <div class="inner"></div>
+   </div>
 
 
+   <style>
+   .bg{
+       background: url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80');
+       height: 200px;
+       background-size: cover;
+       position: relative;
+       background-repeat:no-repeat;
+   }
 
+   .bg .inner{
+        position: absolute;
+        top:0px;
+        left:0px;
+        right:0px;
+        bottom:0px;
+        background: #00000036
+   }
+   </style>
 
     <!-- services_section start -->
-    <div class="services_section">
+    <div class="cam-ket-box box">
+        <h4 class="text-center heading-main">Thông tin thêm</h4>
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-xs-12 col-sm-6">
@@ -404,4 +515,77 @@
         </div>
     </div>
     <!-- testimonial_section end -->
+
+    <style>
+    .box{
+        margin-top:100px;
+        display: block;
+        position: relative;
+        margin-bottom:100px;
+    }
+    .box .heading-main{
+        font-size: 24px;
+        font-weight: 500;
+        text-transform: uppercase;
+        color:#f44336;
+    }
+    .box .heading-main:before {
+    content: "";
+    width: 200px;
+    height: 2px;
+    background: #f44336;
+    position: absolute;
+    top: 40px;
+}
+     .cam-ket-box .cam-ket{
+        text-align: center;
+        padding:10px;    
+     }
+     .cam-ket-box .cam-ket h5{
+        font-size: 24px;
+     }
+     .cam-ket-box .cam-ket p{
+         font-style: italic;
+         font-size: 18px;
+         margin-top:10px;
+     }
+     .cam-ket-box .cam-ket .inner{
+        box-shadow:#ececec 0px 3px 16px 4px;
+        width: 100%;
+        padding:10px;
+        height:180px;    
+     }
+     .cam-ket-box .cam-ket img{
+        height: 80px;
+        color: #4CAF50;
+     }
+
+     .cam-ket-box .row{
+         margin-top:20px;
+     }
+
+     .quy-trinh .cam-ket{
+         text-align: center
+     }
+     .quy-trinh .circle{
+         border-radius: 50%;
+         width:120px;
+         height:120px;
+         margin:0px auto;
+         border:4px solid #f44336;
+         display:flex;
+         justify-content:center;
+         align-items: center
+     }
+
+     .quy-trinh .cam-ket h5{
+         font-size: 18px;
+         margin-top:10px;
+     }
+
+     .quy-trinh .cam-ket p{
+         font-size: 16px;
+         color:black;
+     }
+    </style>
 @endsection

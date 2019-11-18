@@ -1,7 +1,21 @@
 @extends('layouts.user')
-@section('header',__('main.request_transport'))
-@section('small_header',__('main.list'))
+
+@if (!isset($title))
+   @section('header',__('main.request_transport'))
+   @section('small_header',__('main.list'))
+@else
+   @section('header',$title)
+   @section('small_header','')
+@endif
+
 @section('content')
+
+@if(session('notify'))
+  <div class="alert alert-success">
+    {{session('notify')}}
+  </div>
+@endif
+
 <?php
    $total_quantity = 0;
    $total_price    = 0;
@@ -12,14 +26,28 @@
 <script src="{{ asset('js/order.js?x=') }}{{time()}}"></script>
 
 <div class="row">
-
+ <?php 
+   $review_count = DB::table('orders')->where('ship_request',1)->count();
+   $wait_to_pay_count = DB::table('orders')->where('ship_request',1)->where('ship_fee','>',0)->count();
+   $wait_to_ship = DB::table('orders')->where('ship_request',2)->count();
+   $sent= DB::table('orders')->where('ship_request',3)->count();
+   $canceled = DB::table('orders')->where('ship_request',4)->count();
+   $received = DB::table('orders')->where('ship_request',5)->count();
+ ?>
   @if ($status!=-1)
   <div style="margin-bottom:10px;margin-left:15px;margin-right:15px">
-    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/1')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/1')}}">Chờ duyệt</a>
-    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/2')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/2')}}">Chờ thanh toán phí ship</a>
-    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/3')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/3')}}">Chờ giao</a>
-    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/4')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/4')}}">Đã huỷ</a>
-    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/5')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/5')}}">Đã giao</a>
+    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/1')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/1')}}">
+      Chờ duyệt&nbsp;({{$review_count}})</a>
+    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/2')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/2')}}">
+      Chờ thanh toán phí ship&nbsp;({{$wait_to_pay_count}})</a>
+    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/3')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/3')}}">
+      Chờ giao&nbsp;({{$wait_to_ship}})</a>
+    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/4')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/4')}}">
+      Đã huỷ&nbsp;({{$canceled}})</a>
+    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/5')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/5')}}">
+      Đã giao&nbsp;({{$sent}})</a>
+    <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/6')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="{{url('users/transport/list/6')}}">
+      Đã nhận&nbsp;({{$received}})</a>
   </div>
   @endif
 @if (count($list)>0)
@@ -49,7 +77,11 @@
 
                   @case(5)
                   <label class="label label-success">Đã giao</label>
-                        @break
+                     @break
+
+                  @case(6)
+                  <label class="label label-success">Đã nhận</label>
+                     @break
                  @default
                      
              @endswitch
@@ -84,6 +116,14 @@
               </form>
          </p>
          @endif
+
+         @if ($r->ship_request==5)
+         <p>
+             <a class="btn btn-danger" href="{{url('users/transport/received_goods/'.$r->id)}}" 
+               onclick="return confirm('Bạn chắc chắn đã nhận hàng ?')">Đã nhận</a>
+         </p>
+         @endif
+
          @if ($r->ship_request!=0)
          <p>
             Nguời nhận: <b>{{$r->receiver}}</b><br>
@@ -92,7 +132,12 @@
             Đơn vị giao:  <b>{{$r->transport_vn_name}}</b>
             <br>
             Mã đơn vận: <b>{{$r->vn_lading}}</b><br>
-            Phí ship: <b>{{$r->ship_fee}}</b>
+            Phí ship: <b>{{formatVND($r->ship_fee)}}</b>
+
+            @if ($r->ship_request==4)
+                <br>
+                Lý do huỷ: <b>{{$r->cancel_ship_vn_reason}}</b>
+            @endif
          </p>
          @endif
 
@@ -103,58 +148,4 @@
 {{ $list->links() }}
 @endif
 </div>
-
-{{-- <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-   
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Chọn địa chỉ nhận hàng</h4>
-          </div>
-          <div class="modal-body">
-
-          </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">OK</button>
-          </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal --> --}}
-
-
-<script>
-  // function choose_address(){
-  //   $.ajax({
-  //     type: "get",
-  //     url: "{{url('users/transport/choose_address_api')}}",
-  //     dataType: "html",
-  //     success: function (response) {
-  //       $('#addAddressModal .modal-body').html(response);
-  //       $('#addAddressModal').modal('show');
-  //     }
-  //   });
-  // }
-
-  // $('.choose-address').click(function(){
-  //   choose_address();
-  // })
-
-  // function send_request(){
-  //    if($('.send_request_form input[name="id_address"]').val()==''){
-  //     $.ajax({
-  //     type: "get",
-  //     url: "{{url('users/transport/choose_address_api')}}",
-  //     dataType: "html",
-  //     success: function (response) {
-  //       $('#addAddressModal .modal-body').html(response);
-  //       $('#addAddressModal').modal('show');
-  //     }
-  //   });
-  //     return false;
-  //    }
-  //  };
-
-
-</script>
 @endsection

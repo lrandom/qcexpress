@@ -49,7 +49,7 @@
 
               <div class="form-group">
                 <label>{{__('main.contents')}}*</label>
-                <textarea class="form-control" name="contents" >{{old('contents')}}</textarea>
+                <textarea class="form-control tyni-edit" name="contents" >{{old('contents')}}</textarea>
                 @if ($errors->has('contents'))
                   <div class="alert alert-danger">
                     {{ $errors->first('contents') }}

@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('header',__('main.transaction'))
 @section('small_header',__('main.list'))
+
 @section('content')
     <style>
       .sub{
@@ -11,7 +12,11 @@
           color:green;
       }
     </style>
-
+@if (session('status'))
+<div class="alert alert-success">
+    {{ session('status') }}
+</div>
+@endif
 @include('shared.filter_stm')
 
     <div class="box">
@@ -60,10 +65,9 @@
                             @if ($r->method==3)
                            Tiền Trong Tài Khoản QCExpress
                         @endif
-                                
                         </td>
                         <td>
-                            @if ($r->is_sub==1)
+                            @if ($r->is_sub==0)
                                 <span class="sub">- {{formatVND($r->amount)}}</span>
                             @else
                                 <span class="add">+ {{formatVND($r->amount)}}</span>
@@ -111,6 +115,7 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li><a class="btn-confirm" href="{{URL::to('admin/statements/pending/'.$r->id)}}">{{__('main.pending')}}</a></li>
                                         <li><a class="btn-confirm" href="{{URL::to('admin/statements/compelte/'.$r->id)}}">{{__('main.compelte')}}</a></li>
+                                        <li><a class="btn-confirm" href="{{URL::to('admin/statements/delete/'.$r->id)}}">Xoá</a></li>
                                     </ul>
                                 </div>
                             </td>

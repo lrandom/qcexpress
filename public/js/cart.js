@@ -43,7 +43,7 @@ $(document).ready(function () {
     });
 
     function calcAmount(parent, quantity, func) {
-        parent.each( function() {
+        parent.each(function () {
             let thiss = $(this);
             let data = JSON.parse($(this).find('.input-quantity').attr('data-config'));
             $.ajax({
@@ -73,7 +73,7 @@ $(document).ready(function () {
                     let table = thiss.closest('.box');
                     var stuffsPrice = 0;
                     let fee = 0;
-                    if(table.find('.check-item-elm:checked').length > 0){
+                    if (table.find('.check-item-elm:checked').length > 0) {
                         table.find('.check-item-elm:checked').each(function () {
                             let inputQuantity = parseInt($(this).closest('.item-wrapper').find('.input-quantity').val());
                             let inputVNDPrice = parseFloat($(this).closest('.item-wrapper').find('.input-vnd-price').val());
@@ -95,7 +95,7 @@ $(document).ready(function () {
                             thiss.closest('.item-wrapper').find('.price-only-item').val(stuffVNDPrice);
                             calc_price();
                         });
-                    }else{
+                    } else {
                         table.closest('.box').find('.stuffs-amount').text(formatterVND.format(0));
                         table.closest('.box').find('.input-stuffs-price').val(0);
                         table.closest('.box').find('.count-fee-order').text(formatterVND.format(0));
@@ -139,8 +139,8 @@ $(document).ready(function () {
 
 
     didloadview();
-    function didloadview(){
-        $('.box .check-item-ip:checked').each(function(){
+    function didloadview() {
+        $('.box .check-item-ip:checked').each(function () {
             let html_od_owner_name = $(this).closest('.box').find('.od-owner-name');
             let html_od_rate = $(this).closest('.box').find('.od-rate');
 
@@ -149,7 +149,7 @@ $(document).ready(function () {
 
             if (($(this).closest('.box').find('.check-item-elm:checked')).length > 0) {
                 $(this).closest('.box').find('.check-item-ip').prop('checked', true);
-                ($(this).closest('.box').find('.check-item-elm:checked')).each(function(){
+                ($(this).closest('.box').find('.check-item-elm:checked')).each(function () {
 
                     let html_od_ind_item = $(this).closest('.item-wrapper').find('.od-ind-item');
 
@@ -164,23 +164,23 @@ $(document).ready(function () {
 
                 $(this).closest('.box').find('.check-item-elm:not(:checked)').each(function () {
                     let temp_id = $(this).closest('.item-wrapper').find('.od-ind-item').data('only');
-                    $('.group-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
-                    $('.group-all-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
+                    $('.group-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
+                    $('.group-all-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
                 });
-                
+
 
                 $(this).closest('.box').find('.btn-add-order').prop('type', 'submit');
             } else {
                 $(this).closest('.box').find('.check-item-ip').prop('checked', false);
                 $(this).closest('.box').find('.group-ip .od-ind-item').remove();
 
-                $('.group-all-ip .od-owner-name[data-only="'+html_od_owner_name.data('only')+'"]').remove();
-                $('.group-all-ip .od-rate[data-only="'+html_od_rate.data('only')+'"]').remove();
+                $('.group-all-ip .od-owner-name[data-only="' + html_od_owner_name.data('only') + '"]').remove();
+                $('.group-all-ip .od-rate[data-only="' + html_od_rate.data('only') + '"]').remove();
                 // $('.group-all-ip .od-note[data-only="'+html_od_note.data('only')+'"]').remove();
 
                 $(this).closest('.box').find('.check-item-elm').each(function () {
                     let temp_id = $(this).closest('.item-wrapper').find('.od-ind-item').data('only');
-                    $('.group-all-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
+                    $('.group-all-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
                 });
 
                 $(this).closest('.box').find('.btn-add-order').prop('type', 'button');
@@ -190,7 +190,7 @@ $(document).ready(function () {
         });
         calc_price();
 
-        $('.box .check-item-ip:not(:checked)').each(function(){
+        $('.box .check-item-ip:not(:checked)').each(function () {
             $(this).closest('.box').find('.stuffs-amount').text(formatterVND.format(0));
             $(this).closest('.box').find('.input-stuffs-price').val(0);
             $(this).closest('.box').find('.count-fee-order').text(formatterVND.format(0));
@@ -241,11 +241,11 @@ $(document).ready(function () {
 
             $(this).closest('.box').find('.check-item-elm').each(function () {
                 let temp_id = $(this).closest('.item-wrapper').find('.od-ind-item').data('only');
-                $('.group-all-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
+                $('.group-all-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
             });
 
-            $('.group-all-ip .od-owner-name[data-only="'+html_od_owner_name.data('only')+'"]').remove();
-            $('.group-all-ip .od-rate[data-only="'+html_od_rate.data('only')+'"]').remove();
+            $('.group-all-ip .od-owner-name[data-only="' + html_od_owner_name.data('only') + '"]').remove();
+            $('.group-all-ip .od-rate[data-only="' + html_od_rate.data('only') + '"]').remove();
             // $('.group-all-ip .od-note[data-only="'+html_od_note.data('only')+'"]').remove();
 
 
@@ -281,8 +281,8 @@ $(document).ready(function () {
 
             $(this).closest('.box').find('.check-item-elm:not(:checked)').each(function () {
                 let temp_id = $(this).closest('.item-wrapper').find('.od-ind-item').data('only');
-                $('.group-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
-                $('.group-all-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
+                $('.group-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
+                $('.group-all-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
             });
 
 
@@ -291,14 +291,14 @@ $(document).ready(function () {
             $(this).closest('.box').find('.check-item-ip').prop('checked', false);
             $(this).closest('.box').find('.group-ip .od-ind-item').remove();
 
-            $('.group-all-ip .od-owner-name[data-only="'+html_od_owner_name.data('only')+'"]').remove();
-            $('.group-all-ip .od-ind-item[data-only="'+html_od_ind_item.data('only')+'"]').remove();
-            $('.group-all-ip .od-rate[data-only="'+html_od_rate.data('only')+'"]').remove();
+            $('.group-all-ip .od-owner-name[data-only="' + html_od_owner_name.data('only') + '"]').remove();
+            $('.group-all-ip .od-ind-item[data-only="' + html_od_ind_item.data('only') + '"]').remove();
+            $('.group-all-ip .od-rate[data-only="' + html_od_rate.data('only') + '"]').remove();
             // $('.group-all-ip .od-note[data-only="'+html_od_note.data('only')+'"]').remove();
 
             $(this).closest('.box').find('.check-item-elm').each(function () {
                 let temp_id = $(this).closest('.item-wrapper').find('.od-ind-item').data('only');
-                $('.group-all-ip .od-ind-item[data-only="'+temp_id+'"]').remove();
+                $('.group-all-ip .od-ind-item[data-only="' + temp_id + '"]').remove();
             });
 
 
@@ -320,9 +320,9 @@ $(document).ready(function () {
         let item_checked = $('.check-item-elm:checked');
         let shop_checked = $('.check-item-ip:checked');
 
-        if(item_checked.length > 0){
+        if (item_checked.length > 0) {
             $('.btn-order-total').prop('type', 'submit');
-        }else{
+        } else {
             $('.btn-order-total').prop('type', 'button');
             $('.btn-order-total').attr('data-toggle', 'modal');
             $('.btn-order-total').attr('data-target', '#tickModal');
@@ -332,7 +332,7 @@ $(document).ready(function () {
             price = price * 1 + (($(this).closest('.item-wrapper').find('.price-only-item')).val()) * 1;
         });
 
-        service = (price/100)*5;
+        service = (price / 100) * buy_fee;
         total = price + service;
 
         $('.numb-price').html(formatterVND.format(price));
@@ -347,11 +347,11 @@ $(document).ready(function () {
 
     var link = null;
 
-    $('.btn-del').click(function(){
+    $('.btn-del').click(function () {
         link = $(this).data('link');
     });
 
-    $('.confirm-del').click(function(){
+    $('.confirm-del').click(function () {
         window.location.href = link;
         link = null;
     });

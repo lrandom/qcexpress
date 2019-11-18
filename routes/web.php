@@ -98,18 +98,20 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function () {
     Route::group(['prefix' => 'transport'], function () {
         Route::get('request_transport', 'Admin\TransportsControllers@request_transport');
         Route::get('wait_for_pay', 'Admin\TransportsControllers@wait_for_pay');
-        Route::post('cancel/{id}', 'Admin\TransportsControllers@cancel_transport');
-        Route::get('bill_transport', 'Admin\TransportsControllers@bill_transport');
-        Route::get('bill_transport/{id}', 'Admin\TransportsControllers@bill_transport');
+        Route::post('cancel', 'Admin\TransportsControllers@cancel_transport');
+        //Route::get('bill_transport', 'Admin\TransportsControllers@bill_transport');
+        //Route::get('bill_transport/{id}', 'Admin\TransportsControllers@bill_transport');
         Route::post('agree_ship', 'Admin\TransportsControllers@agree_ship');
         Route::get('received/{id}', 'Admin\TransportsControllers@received');
         Route::post('upload_img', 'Admin\TransportsControllers@upload_img');
+        Route::get('list/{status}', 'Admin\TransportsControllers@index');
     });
 
     Route::group(['prefix' => 'statements'], function () {
         Route::get('', 'Admin\StatementsControllers@index');
         Route::get('pending/{id}', 'Admin\StatementsControllers@pending');
         Route::get('compelte/{id}', 'Admin\StatementsControllers@compelte');
+        Route::get('delete/{id}', 'Admin\StatementsControllers@delete');
     });
 
     Route::group(['prefix' => 'settings'], function () {
@@ -127,6 +129,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin']], function () {
     });
     Route::get('orders/{id}', 'Admin\OrdersControllers@index');
     Route::post('orders/upload_img', 'Admin\OrdersControllers@upload_img');
+    Route::post('orders/cancel_order', 'Admin\OrdersControllers@cancel_order');
+    Route::get('orders/delete/{id}', 'Admin\OrdersControllers@delete');
 });
 
 
@@ -187,6 +191,7 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth', 'verified']], functi
         Route::post('edit_address', 'User\TransportsController@edit_address');
         Route::get('delete_address/{id}', 'User\TransportsController@delete_address');
         Route::post('upload_img', 'User\TransportsController@upload_img');
+        Route::get('received_goods/{id}', 'User\TransportsController@received_goods');
     });
 
     Route::group(['prefix' => 'complaints'], function () {

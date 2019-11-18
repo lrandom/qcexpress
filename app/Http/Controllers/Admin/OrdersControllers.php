@@ -366,7 +366,8 @@ class OrdersControllers extends Controller
         $created_at = $order->created_at;
         if ($order->status == 20 && $order->deposit <= 0) {
             $order->delete();
-            $comments = DB::table('comments_orders')->where('id_order', $id)->delete();
+            DB::table('comments_orders')->where('id_order', $id)->delete();
+            DB::table('stuffs')->where('id_order', $id)->delete();
         }
         return back()->with('notify', 'Xoá đơn ' . formatorderid($order->created_at, $id) . ' thành công');
     }

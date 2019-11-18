@@ -147,19 +147,20 @@ class OrdersControllers extends Controller
 
         $obj = Order::find($request->id);
         $obj->is_final = 1;
+        $obj->deposit = $obj->deposit + $request->pay;
         $obj->save();
 
         $comment = new CommentsOrders();
 
-        $comment->content = htmlspecialchars('<span class="text-red">Tất toán đơn hàng </span><a>QC'  . $request->id . '</a>&nbsp;<strong><span class="text-green">' . formatVNDString($request->pay) . '</span></strong>');
+        $comment->content = htmlspecialchars('<span class="text-red">Tất toán đơn hàng </span><a>QC&nbsp;'  . $request->id . '</a>&nbsp;<strong><span class="text-green">' . formatVNDString($request->pay) . '</span></strong>');
         $comment->id_order = $request->id;
         $comment->id_user = Auth::user()->id;
         $comment->save();
 
         $stm = new Statements();
-        $stm->content = htmlspecialchars('<span class="text-red">Tất toán đơn hàng </span><a>QC' .  $request->id . '</a>:&nbsp;<strong><span class="text-green"></span></strong>');
+        $stm->content = htmlspecialchars('<span class="text-red">Tất toán đơn hàng </span><a>QC&nbsp;' .  $request->id . '</a>:&nbsp;<strong><span class="text-green"></span></strong>');
         $stm->created_at =  now()->timestamp;
-        $stm->type = 2; //đat coc
+        $stm->type = 1; //đat coc
         $stm->is_sub = 1;
         $stm->amount = $request->pay;
         $stm->method = 3; //tien quy doi
@@ -210,7 +211,7 @@ class OrdersControllers extends Controller
         $obj->save();
 
         $comment = new CommentsOrders();
-        $comment->content = htmlspecialchars('<span class="text-red">Huỷ đơn hàng </span><a>QC' .  $request->id . '</a>');
+        $comment->content = htmlspecialchars('<span class="text-red">Huỷ đơn hàng </span><a>QC&nbsp;' .  $request->id . '</a>');
         $comment->id_order = $request->id;
         $comment->id_user = Auth::user()->id;
         $comment->save();

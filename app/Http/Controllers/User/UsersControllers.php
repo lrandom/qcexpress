@@ -175,6 +175,9 @@ class UsersControllers extends Controller
     public function logout()
     {
         Auth::logout();
+        if (isset($_SESSION['cart'])) {
+            unset($_SESSION['cart']);
+        }
         return redirect('/');
     }
 }

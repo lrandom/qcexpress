@@ -181,6 +181,9 @@ class OrdersController extends Controller
         $status = $request->status;
         $id = $request->id;
         $obj = Order::find($id);
+        if ($status == 9) {
+            $obj->ship_request = 6;
+        }
         $obj->status = $status;
         if ($status == 20) {
             $id_user = $obj->id_user;

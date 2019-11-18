@@ -45,13 +45,11 @@
           <!-- form start -->
           <form class="form-horizontal" action="{{URL::to('users/finance/deposit')}}" method="POST" enctype="multipart/form-data">
             @csrf
-
             <div class="box-body">
               <div class="form-group">
-                <label class="col-sm-3 col-xs-12 control-label">{{__('main.picture')}}<span class="asterisk">*</span></label>
+                <label class="col-sm-3 col-xs-12 control-label">{{__('main.picture')}} (Không bắt buộc)</label>
                 <div class="col-sm-9 col-xs-12">
                   <input type="file" name="photo">
-
                   @error('photo')
                     <div class="error">{{ $message }}</div>
                   @enderror

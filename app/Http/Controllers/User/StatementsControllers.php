@@ -25,8 +25,7 @@ class StatementsControllers extends Controller
                 'amount' => 'required',
                 'transfer_method' => 'required',
                 'transaction_time' => 'required',
-                'content' => 'required',
-                'photo' => 'required'
+                'content' => 'required'
             ];
             if ($request->transfer_method == 2) {
                 $validate['bank'] = 'required';

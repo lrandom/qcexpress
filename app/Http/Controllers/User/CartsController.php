@@ -23,6 +23,7 @@ class CartsController extends Controller
 
     public function cart(Request $request)
     {
+        //unset($_SESSION['cart']);
         $cart = null;
         if (isset($_SESSION['cart'])) {
             $cart = $_SESSION['cart'];
@@ -103,13 +104,10 @@ class CartsController extends Controller
         echo json_encode(array('success' => 1));
     }
 
-    public function delete(Request $request)
+    private function deleteItem($shop, $index, $type)
     {
         if (isset($_SESSION['cart'])) {
-            $shop = $request->query('shop');
-            $index = $request->query('index');
             $cart = $_SESSION['cart'];
-            $type = $request->query('owner_type');
             //dd($cart);
             switch ($type) {
                 case 1:
@@ -181,6 +179,14 @@ class CartsController extends Controller
                     break;
             }
         } //end if
+    }
+
+    public function delete(Request $request)
+    {
+        $shop = $request->query('shop');
+        $index = $request->query('index');
+        $type = $request->query('owner_type');
+        $this->deleteItem($shop, $index, $type);
         return redirect(URL::to('users/cart'));
     }
 
@@ -198,7 +204,7 @@ class CartsController extends Controller
         // dd($request->owner_type);
 
         $data['item_orders'] = [];
-        $temp_cart = $_SESSION['cart'];
+        ///$temp_cart = $_SESSION['cart'];
 
         foreach ($request->owner_type as $key => $owner_type) {
             if ($key == 1) {
@@ -214,9 +220,9 @@ class CartsController extends Controller
                             foreach ($ind_cart['ind_item'] as $ind_item) {
                                 array_push($temp['item'], $_SESSION['cart']['tmall_market'][$row]['stuffs'][$ind_item]);
 
-                                $temp_cart = $temp_cart['tmall_market'];
-                                array_splice($temp_cart, $ind_item, 1);
-                                $_SESSION['cart']['tmall_market'] = $temp_cart;
+                                // $temp_cart = $temp_cart['tmall_market'];
+                                // array_splice($temp_cart, $ind_item, 1);
+                                // $_SESSION['cart']['tmall_market'] = $temp_cart;
                             }
                         }
                         array_push($data['item_orders'], $temp);
@@ -230,15 +236,15 @@ class CartsController extends Controller
                             // $temp['od_note'] = $ind_cart['note'];
                             array_push($temp['item'], $_SESSION['cart']['tmall_shop'][$row]);
 
-                            $temp_cart = $temp_cart['tmall_shop'];
-                            array_splice($temp_cart, $row, 1);
-                            $_SESSION['cart']['tmall_shop'] = $temp_cart;
+                            // $temp_cart = $temp_cart['tmall_shop'];
+                            // array_splice($temp_cart, $row, 1);
+                            // $_SESSION['cart']['tmall_shop'] = $temp_cart;
                         }
                         array_push($data['item_orders'], $temp);
                     }
                 }
             }
-    
+
             if ($key == 2) {
                 foreach ($owner_type as $lab => $id_owner) {
                     $temp['item'] = [];
@@ -251,15 +257,15 @@ class CartsController extends Controller
                         foreach ($ind_cart['ind_item'] as $ind_item) {
                             array_push($temp['item'], $_SESSION['cart']['1688_market'][$row]['stuffs'][$ind_item]);
 
-                            $temp_cart = $temp_cart['1688_market'];
-                            array_splice($temp_cart, $ind_item, 1);
-                            $_SESSION['cart']['1688_market'] = $temp_cart;
+                            // $temp_cart = $temp_cart['1688_market'];
+                            // array_splice($temp_cart, $ind_item, 1);
+                            // $_SESSION['cart']['1688_market'] = $temp_cart;
                         }
                     }
                     array_push($data['item_orders'], $temp);
                 }
             }
-    
+
             if ($key == 3) {
                 foreach ($owner_type as $lab => $id_owner) {
                     $temp['item'] = [];
@@ -272,9 +278,9 @@ class CartsController extends Controller
                         foreach ($ind_cart['ind_item'] as $ind_item) {
                             array_push($temp['item'], $_SESSION['cart']['taobao_market'][$row]['stuffs'][$ind_item]);
 
-                            $temp_cart = $temp_cart['taobao_market'];
-                            array_splice($temp_cart, $ind_item, 1);
-                            $_SESSION['cart']['taobao_market'] = $temp_cart;
+                            // $temp_cart = $temp_cart['taobao_market'];
+                            // array_splice($temp_cart, $ind_item, 1);
+                            // $_SESSION['cart']['taobao_market'] = $temp_cart;
                         }
                     }
                     array_push($data['item_orders'], $temp);
@@ -290,13 +296,17 @@ class CartsController extends Controller
     public function add_order(Request $request)
     {
         $order_lst = json_decode($request->order_lst, true);
-        // dd($order_lst);
+        //dd($order_lst);
 
         if (isset($_SESSION['cart'])) {
             try {
+                $index = -1;
 
+                $cart = $_SESSION['cart'];
+
+                //var_dump($order_lst);
+                //dd($cart);
                 foreach ($order_lst as $key => $value) {
-                
                     $owner_type = $value['owner_type'];
 
                     $obj = new Order();
@@ -321,6 +331,7 @@ class CartsController extends Controller
                     $id_order = $obj->id;
                     $temp_deposit = 0;
 
+                    $key = [];
                     foreach ($value['item'] as $lab => $item) {
                         $stuff = new Stuff();
                         $stuff->id_order = $id_order;
@@ -333,7 +344,7 @@ class CartsController extends Controller
                         $stuff->id = Uuid::generate()->string;
                         $stuff->picture = $item['picture'];
 
-                        $temp_deposit = $temp_deposit*1 + $item['price']*$value['rate']*$item['quantity'];
+                        $temp_deposit = $temp_deposit * 1 + $item['price'] * $value['rate'] * $item['quantity'];
 
                         if (isset($item['props']) && isset($item['props']) != null) {
                             $stuff->props = json_encode($item['props']);
@@ -341,16 +352,60 @@ class CartsController extends Controller
                         $stuff->save();
                     }
 
-                    $obj->deposit = ($temp_deposit/100)*(Auth::user()->per_deposit);
+
+                    $obj->deposit = ($temp_deposit / 100) * (Auth::user()->per_deposit);
                     $obj->save();
 
                     $comment = new CommentsOrders();
-                    $comment->content = htmlspecialchars('<span class="text-red">Tạo đơn hàng </span><a>' . formatorderid($obj->created_at, $id_order) . '</a>');
+                    $comment->content = htmlspecialchars('<span class="text-red">Tạo đơn hàng </span>&nbsp;<a>QC' . $id_order  . '</a>');
                     $comment->id_order = $id_order;
                     $comment->id_user = Auth::user()->id;
                     $comment->save();
                 }
 
+                if (count($order_lst) > 1) {
+                    unset($_SESSION['cart']);
+                } else {
+                    $key_shop = '';
+                    $owner_type = $order_lst[0]['owner_type'];
+                    $id_shop = $order_lst[0]['id_owner'];
+                    if ($owner_type == 1) {
+                        if ($value['id_owner'] == -1) {
+                            $key_shop = 'tmall_shop';
+                        } else {
+                            $key_shop = 'tmall_market';
+                        }
+                    }
+
+                    if ($owner_type == 2) {
+                        $key_shop = '1688_market';
+                    }
+
+                    if ($owner_type == 3) {
+                        $key_shop = 'taobao_market';
+                    }
+
+                    //dd($cart);
+                    if ($key_shop == 'tmall_shop') {
+                        unset($cart['tmall_shop']);
+                    } else {
+                        //dd($cart[$key_shop]);
+                        for ($i = 0; $i < count($cart[$key_shop]); $i++) {
+                            if ($cart[$key_shop][$i]['id_owner'] == $id_shop) {
+                                //array_splice($cart[$key_shop][$i], 1);
+                                //echo $i;
+                                //exit();
+                                unset($cart[$key_shop][$i]);
+                                $cart[$key_shop] = array_values(
+                                    $cart[$key_shop]
+                                );
+                                break;
+                            };
+                        }
+                    }
+                    $_SESSION['cart'] = $cart;
+                    //dd($_SESSION['cart']);
+                }
                 return redirect('/users/success')->with('id', formatorderid($obj->created_at, $id_order));
             } catch (\Throwable $th) {
                 echo $th->getMessage();

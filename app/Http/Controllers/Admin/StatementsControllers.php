@@ -175,4 +175,16 @@ class StatementsControllers extends Controller
         }
         return redirect('/admin/statements');
     }
+
+    public function delete($id)
+    {
+        if (is_numeric($id)) {
+            $obj = Statements::find($id);
+            if ($obj->photo != null) {
+                File::delete($obj->photo);
+            }
+            DB::delete('delete from statements where id = ?', [$id]);
+        }
+        return redirect('/admin/statements')->with('status', 'Xoá thành công');
+    }
 }

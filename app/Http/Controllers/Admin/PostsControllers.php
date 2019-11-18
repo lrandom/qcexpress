@@ -40,7 +40,7 @@ class PostsControllers extends Controller
             $obj = new Posts();
             $obj->id_categories = $request->id_categories;
             $obj->title = $request->title;
-            $obj->contents = $request->contents;
+            $obj->contents = htmlspecialchars($request->contents);
             $obj->description = $request->description;
             $obj->keyword = $request->keyword;
             $obj->is_active = 1;
@@ -76,7 +76,7 @@ class PostsControllers extends Controller
             $obj = Posts::find($request->id);
             $obj->id_categories =  $request->id_categories;
             $obj->title =  $request->title;
-            $obj->contents =  $request->contents;
+            $obj->contents =  htmlspecialchars($request->contents);
             $obj->description =  $request->description;
             $obj->keyword =  $request->keyword;
             $obj->save();

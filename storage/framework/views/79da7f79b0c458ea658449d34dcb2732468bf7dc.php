@@ -1,5 +1,10 @@
-<?php $__env->startSection('header',__('main.request_transport')); ?>
-<?php $__env->startSection('small_header',__('main.list')); ?>
+<?php if(!isset($title)): ?>
+   <?php $__env->startSection('header',__('main.request_transport')); ?>
+   <?php $__env->startSection('small_header',__('main.list')); ?>
+<?php else: ?>
+   <?php $__env->startSection('header',$title); ?>
+   <?php $__env->startSection('small_header',''); ?>
+<?php endif; ?>
 <?php $__env->startSection('content'); ?>
 <?php
    $total_quantity = 0;
@@ -9,13 +14,21 @@
    var id_user = '<?php echo e(Auth::user()->id); ?>';
 </script>
 <script src="<?php echo e(asset('js/order.js?x=')); ?><?php echo e(time()); ?>"></script>
-
+<?php 
+$review_count = DB::table('orders')->where('ship_request',1)->count();
+$wait_to_pay_count = DB::table('orders')->where('ship_request',1)->where('ship_fee','>',0)->count();
+$wait_to_ship = DB::table('orders')->where('ship_request',2)->count();
+$sent= DB::table('orders')->where('ship_request',3)->count();
+$canceled = DB::table('orders')->where('ship_request',4)->count();
+$received = DB::table('orders')->where('ship_request',5)->count();
+?>
 <div style="margin-bottom:10px;margin-left:15px;margin-right:15px">
-        <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/1')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="<?php echo e(url('users/transport/list/1')); ?>">Chờ duyệt</a>
-        <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/2')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="<?php echo e(url('users/transport/list/2')); ?>">Chờ thanh toán phí ship</a>
-        <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/3')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="<?php echo e(url('users/transport/list/3')); ?>">Chờ giao</a>
-        <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/4')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="<?php echo e(url('users/transport/list/4')); ?>">Đã huỷ</a>
-        <a class="btn <?php if(Request::fullUrl()==url('users/transport/list/5')){echo 'btn-danger';}else{echo 'btn-default';} ?>" href="<?php echo e(url('users/transport/list/5')); ?>">Đã giao</a>
+        <a class="btn <?php if(Request::fullUrl()==url('admin/transport/list/1')){echo 'btn-success';}else{echo 'btn-default';} ?>" href="<?php echo e(url('admin/transport/list/1')); ?>">Chờ duyệt&nbsp;(<?php echo e($review_count); ?>)</a>
+        <a class="btn <?php if(Request::fullUrl()==url('admin/transport/list/2')){echo 'btn-success';}else{echo 'btn-default';} ?>" href="<?php echo e(url('admin/transport/list/2')); ?>">Chờ thanh toán phí ship&nbsp;(<?php echo e($wait_to_pay_count); ?>)</a>
+        <a class="btn <?php if(Request::fullUrl()==url('admin/transport/list/3')){echo 'btn-success';}else{echo 'btn-default';} ?>" href="<?php echo e(url('admin/transport/list/3')); ?>">Chờ giao&nbsp;(<?php echo e($wait_to_ship); ?>)</a>
+        <a class="btn <?php if(Request::fullUrl()==url('admin/transport/list/4')){echo 'btn-success';}else{echo 'btn-default';} ?>" href="<?php echo e(url('admin/transport/list/4')); ?>">Đã huỷ&nbsp;(<?php echo e($canceled); ?>)</a>
+        <a class="btn <?php if(Request::fullUrl()==url('admin/transport/list/5')){echo 'btn-success';}else{echo 'btn-default';} ?>" href="<?php echo e(url('admin/transport/list/5')); ?>">Đã giao&nbsp;(<?php echo e($sent); ?>)</a>
+        <a class="btn <?php if(Request::fullUrl()==url('admin/transport/list/6')){echo 'btn-success';}else{echo 'btn-default';} ?>" href="<?php echo e(url('admin/transport/list/6')); ?>">Đã nhận&nbsp;(<?php echo e($received); ?>)</a>
       </div>
 <?php if(count($list)>0): ?>
 <?php $__currentLoopData = $list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $r): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -44,7 +57,11 @@
    
                      <?php case (5): ?>
                      <label class="label label-success">Đã giao</label>
-                           <?php break; ?>
+                        <?php break; ?>
+
+                     <?php case (6): ?>
+                     <label class="label label-success">Đã nhận</label>
+                        <?php break; ?>
                     <?php default: ?>
                         
                 <?php endswitch; ?>
@@ -57,7 +74,11 @@
                 Địa chỉ: <b><?php echo e($r->address); ?></b><br>
                 Số ĐT: <b><?php echo e($r->receiver_phone); ?></b><br>
                 Phí giao hàng: <b class="text-green"><?php echo e(formatVND($r->ship_fee)); ?></b><br>
-             </p>
+                <?php if($r->ship_request==4): ?>
+                <br>
+                Lý do huỷ: <b><?php echo e($r->cancel_ship_vn_reason); ?></b>
+                <?php endif; ?>
+         </p>
          <form action="agree_ship" method="POST">
             <?php echo csrf_field(); ?>
             <input type="hidden" value="<?php echo e($r->id); ?>" name="id" class="form-control" required>
@@ -69,15 +90,17 @@
             <?php endif; ?>
 
             <?php if($r->ship_request==3): ?>
-              <input class="form-control" type="text" name="transport_vn_name" placeholder="Đơn vị giao hàng" required><br>
-              <input class="form-control" type="text" name="vn_lading" placeholder="Mã đơn vận" required><br>
-              <button type="submit" class="btn btn-success btn-sm" name="btn-update-ship-info" value="1">Cập nhật</button>
+            <label>Đơn vị giao hàng</label>
+              <input class="form-control" type="text" name="transport_vn_name" placeholder="Đơn vị giao hàng" required value="<?php echo e($r->transport_vn_name); ?>"><br>
+            <label>Vận đơn (nếu có)</label>
+              <input class="form-control" type="text" name="vn_lading" placeholder="Mã đơn vận" required value="<?php echo e($r->vn_lading); ?>"><br>
+              <button type="submit" class="btn btn-success btn-sm" name="btn-update-ship-info" value="1" >Cập nhật</button>
+              <button type="submit" class="btn btn-danger btn-sm" name="btn-sent" value="1" onclick="return confirm('Bạn chắc chắn muốn chuyển trạng thái là đã giao')">Đã giao</button>
             <?php endif; ?>
-
          </form>
 
          <?php if($r->ship_request==1 || $r->ship_request==3): ?>
-         <form action="<?php echo e(url('admin/transport/cancel/')); ?>" method="POST" style="margin-top:10px">
+         <form action="<?php echo e(url('admin/transport/cancel')); ?>" method="POST" style="margin-top:10px">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" value="<?php echo e($r->id); ?>" name="id" class="form-control" required>
                 <p>Huỷ giao với lý do:</p>

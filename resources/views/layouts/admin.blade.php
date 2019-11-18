@@ -102,7 +102,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-
           @php
           $all = DB::table('orders')->count();
           $pending = DB::table('orders')->where('status',0)->count();
@@ -116,7 +115,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           $received = DB::table('orders')->where('status',9)->count();
           $sold_out = DB::table('orders')->where('status',10)->count();
           $paid = DB::table('orders')->where('deposit','>',0)->count();
-          $unpaid = DB::table('orders')->where('deposit','<=',0)->count();
+          $unpaid = DB::table('orders')->where('deposit','<=',0)->where('is_final',0)->count();
           $final = DB::table('orders')->where('is_final',1)->count();
           $cancel=DB::table('orders')->where('is_final',20)->count();
         @endphp
@@ -185,7 +184,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </ul>
 
 
-
+        <?php 
+          $request_transport_count = DB::table('orders')->where('status',7)->where('ship_request',0)->where('id_user',Auth::user()->id)->count();
+          $bill_transport_count = DB::table('orders')->where('ship_request','!=',0)->where('id_user',Auth::user()->id)->count();
+        ?>
         </li>
         <li class="treeview <?php if(strpos(url()->current(),'admin/transport/')!=false){echo 'active';} ?>">
             <a href="#"><i class="fa fa-truck"></i> <span>{{__('main.transport')}}</span>
@@ -194,12 +196,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </span>
             </a>
             <ul class="treeview-menu">
-              <li <?php if(strpos(url()->current(),'admin/transport/request_transport')!=false){echo 'class="active"';} ?>>
-                <a href="{{URL::to('admin/transport/request_transport')}}">{{__('main.request_transport')}}</a>
-              </li>
+           
   
-              <li <?php if(strpos(url()->current(),'admin/transport/bill_transport')!=false){echo 'class="active"';} ?>>
-                <a href="{{URL::to('admin/transport/bill_transport')}}">{{__('main.bill_transport')}}</a>
+              <li <?php if(Request::fullUrl()==url('admin/transport/list/1') 
+              || Request::fullUrl()==url('admin/transport/list/2') ||
+              Request::fullUrl()==url('admin/transport/list/3') 
+              || Request::fullUrl()==url('admin/transport/list/4') 
+              || Request::fullUrl()==url('admin/transport/list/5')
+              ){echo 'class="active"';} ?>>
+                <a href="{{URL::to('admin/transport/list/1')}}">{{__('main.bill_transport')}}&nbsp;({{$bill_transport_count}})</a>
               </li>
             </ul>
         </li>
@@ -335,15 +340,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
      user experience. -->
 
 {{--TinyMCE--}}
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/1t4achym7sxldb6kbsascbkd68o2huhdipqhr0re1p2b39d2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
   tinymce.init({
           selector: 'textarea.tyni-edit',
           plugins: 'print preview fullpage powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker imagetools textpattern noneditable help formatpainter permanentpen pageembed charmap tinycomments mentions quickbars linkchecker emoticons',
           imagetools_cors_hosts: ['picsum.photos'],
-          tinydrive_token_provider: function (success, failure) {
-              success({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huZG9lIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Ks_BdfH4CWilyzLNk8S2gDARFhuxIauLa8PwhdEQhEo' });
-          },
           tinydrive_demo_files_url: '/docs/demo/tiny-drive-demo/demo_files.json',
           tinydrive_dropbox_app_key: 'jee1s9eykoh752j',
           tinydrive_google_drive_key: 'AIzaSyAsVRuCBc-BLQ1xNKtnLHB3AeoK-xmOrTc',
@@ -416,4 +418,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
           mentions_selector: '.mymention',
           });  
 </script>
+
+
+<style>
+.box{
+  overflow-x: scroll;
+}
+
+.tox-notifications-container{
+  display: none;
+}
+</style>
 </body>

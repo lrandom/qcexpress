@@ -1083,9 +1083,9 @@ blogfive end
 
 .blogone .blog-post-wrapper .entry-title a {
   color: #313131;
-  height: 50px;
   overflow: hidden;
   display: block;
+  line-height: 2.8rem;
 }
 
 .blogone .blog-post-wrapper{

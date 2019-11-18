@@ -6,7 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
         <title>
-            @yield('title_page',__('main.orders'))
+            {{-- @yield('title_page',__('main.orders')) --}}
+            Quảng Châu Express
         </title>
 
         <!-- Place favicon.ico in the root directory -->
@@ -108,7 +109,7 @@
                                             <ul class="dropdown-menu">
                                                 <li class="signin_dropdown">
                                                     <a href="{{URL::to('users/account')}}">Tài khoản</a>
-                                                    <a href="{{asset('users/orders')}}">Đến phần quản lý đơn hàng</a>
+                                                    <a href="{{asset('users/orders/-1')}}">Đến phần quản lý đơn hàng</a>
                                                     <a href="{{asset('users/password')}}">{{__('main.password')}}</a>
                                                     <a href="{{asset('users/logout')}}">Thoát</a>
                                                 </li>

@@ -153,7 +153,7 @@
                                     <th style="width:30%">{{__('main.product')}}</th>
                                     <th>{{__('main.quantity')}}</th>
                                     <th>{{__('main.price')}}</th>
-                                    <th>{{__('main.price_stuffs')}}</th>
+                                    <th>Tổng tiền</th>
                                     <th>{{__('main.operation')}}</th>
                                 </tr>
                                 <?php $index = 0; $stuffs_price = 0; ?>
@@ -184,7 +184,7 @@
                                         </td>
                                         <td>
                                             <input class="text-center form-md input-quantity" data-config='<?php echo '{"owner_type":"1"'.',"shop":"-1","index":"'.$index.'"}' ?>'  min="1" value="{{$r['quantity']}}" type="number" min="1" value="{{$r['quantity']}}" style="width:80px;height:30px"/>
-                                            <input class="input-cny-price" type="hidden" />
+                                            <input class="input-cny-price" type="hidden" value="{{$r['price']}}"/>
                                             <input class="input-vnd-price" type="hidden" value="{{$r['price']*$r['rate']}}" />
 
                                             <div class="btn-group" role="group" aria-label="Default button group">
@@ -206,7 +206,7 @@
                                             <div class="stuff-cny-price"><strong>{{formatCNY( $r['price']*$r['quantity']) }}</strong></div>
 
                                             <div class="stuff-vnd-price">
-                                                <input class="price-only-item" type="hidden" value="{{$r1['price']*$r1['rate']*$r1['quantity']}}">
+                                                <input class="price-only-item" type="hidden" value="{{$r['price']*$r['rate']*$r['quantity']}}">
                                                 <strong>{{formatVND( $r['price']*$r['rate']*$r['quantity'])}}</strong>
                                             <?php 
                                             $stuffs_price+=$r['price']*$r['rate']*$r['quantity'];
@@ -254,10 +254,11 @@
 
                     <div class="col-sm-4 col-xs-12">
                         <form action="{{URL::to('users/cart/make_order')}}" method="POST">
+                           
                             @csrf
                             <div class="group-ip">
                                 <input class="od-owner-name" data-only="tmalworld{{$key}}" type="hidden" value="TMAL SHOP GLOBAL" name="owner_type[1][-1][{{$key}}][owner_name]"/>
-                                <input class="od-rate" data-only="tmalworld{{$key}}" type="hidden" value="{{$r['stuffs'][0]['rate']}}" name="owner_type[1][-1][{{$key}}][rate]"/>
+                                <input class="od-rate" data-only="tmalworld{{$key}}" type="hidden" value="{{$r['rate']}}" name="owner_type[1][-1][{{$key}}][rate]"/>
                                 <input type="hidden" data-only="tmalworld{{$key}}" value="{{$fee+$stuffs_price}}" name="total"/>
                             </div>    
                             <div class="box-right ">

@@ -182,7 +182,7 @@ desired effect
             $received = DB::table('orders')->where('status',9)->where('id_user',Auth::user()->id)->count();
             $sold_out = DB::table('orders')->where('status',10)->where('id_user',Auth::user()->id)->count();
             $paid = DB::table('orders')->where('deposit','>',0)->where('id_user',Auth::user()->id)->count();
-            $unpaid = DB::table('orders')->where('deposit','<=',0)->where('id_user',Auth::user()->id)->count();
+            $unpaid = DB::table('orders')->where('deposit','<=',0)->where('is_final',0)->where('id_user',Auth::user()->id)->count();
             $final = DB::table('orders')->where('is_final',1)->where('id_user',Auth::user()->id)->count();
             $cancel=DB::table('orders')->where('status',20)->where('id_user',Auth::user()->id)->count();
          
@@ -251,9 +251,14 @@ desired effect
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
               </a>
+
+              <?php 
+                $request_transport_count = DB::table('orders')->where('status',7)->where('ship_request',0)->where('id_user',Auth::user()->id)->count();
+                $bill_transport_count = DB::table('orders')->where('ship_request','!=',0)->where('id_user',Auth::user()->id)->count();
+              ?>
               <ul class="treeview-menu">
                 <li <?php if(Request::fullUrl()==url('users/transport/list/-1')){echo 'class="active"';} ?>>
-                  <a href="<?php echo e(URL::to('users/transport/list/-1')); ?>"><?php echo e(__('main.request_transport')); ?></a>
+                  <a href="<?php echo e(URL::to('users/transport/list/-1')); ?>"><?php echo e(__('main.request_transport')); ?>&nbsp;(<?php echo e($request_transport_count); ?>)</a>
                 </li>
     
                 <li <?php if(Request::fullUrl()==url('users/transport/list/1') 
@@ -262,7 +267,7 @@ desired effect
                 || Request::fullUrl()==url('users/transport/list/4') 
                 || Request::fullUrl()==url('users/transport/list/5')
                 ){echo 'class="active"';} ?>>
-                  <a href="<?php echo e(URL::to('users/transport/list/1')); ?>"><?php echo e(__('main.bill_transport')); ?></a>
+                  <a href="<?php echo e(URL::to('users/transport/list/1')); ?>"><?php echo e(__('main.bill_transport')); ?>&nbsp;(<?php echo e($bill_transport_count); ?>)</a>
                 </li>
               </ul>
             </li>
